@@ -64,7 +64,7 @@
                         <div class="portfolio-item mx-auto" data-toggle="modal" data-target="#portfolioModal0">
                             <div class="portfolio-item-caption d-flex align-items-center justify-content-center h-100 w-100">
                                 <div class="portfolio-item-caption-content text-center text-white"><i class="fas fa-plus fa-3x"></i></div>
-                            </div><img class="img-fluid " style="max-height: 120px;" src="assets/img/portfolio/receipt-lg.png" alt="Receipt Tracking"/>
+                            </div><img class="img-fluid" style="max-height: 120px;" src="assets/img/portfolio/receipt-lg.png" alt="Receipt Tracking"/>
                         </div>
                     </div>
                     <div class="col-md-3 col-lg-3 mb-3">
@@ -204,7 +204,7 @@
             <div class="container">
                 <!-- About Section Heading-->
                 <div class="text-center">
-                    <h2 class="page-section-heading d-inline-block text-white">ABOUT</h2>
+                    <h2 class="page-section-heading d-inline-block text-white">About</h2>
                 </div>
                 <!-- Icon Divider-->
                 <div class="divider-custom divider-light">
@@ -238,13 +238,26 @@
                 </div>
                 <!-- Registration Section Content-->
                 <div class="row justify-content-center">
-                    <div class="col-lg-6">
-                        <div class="d-flex flex-column align-items-center">
-							<p>We just need your email address to get going. If you like, you can specify your preferences to help personalise your experience.</p>
+                    <div class="col-lg-8">
+                        <div class="d-flex flex-column">
+							<p>We just need your email address to get going. You may also specify your preferences to help personalise your experience.</p>
 							<p> Once you're done, please click Register and you will receive an email with a link to your account.</p>
-							<form>
+							<form id="registrationForm" action="">
+
+								<div class="form-group">
+									<label for="email">Email</label> 
+									<div class="input-group">
+										<div class="input-group-prepend">
+											<div class="input-group-text">
+												<i class="fa fa-envelope"></i>
+											</div>
+										</div> 
+										<input id="email" name="email" placeholder="me@example.com" type="email" aria-describedby="emailHelpBlock" class="form-control"required>
+									</div> 
+									<span id="emailHelpBlock" class="form-text text-muted">Email address (required)</span>
+								</div>							
 							  
-								<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+								<ul class="nav nav-pills  mb-3" id="pills-tab" role="tablist">
 									<li class="nav-item">
 										<a class="nav-link active" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="true">Profile</a>
 									</li>
@@ -256,11 +269,10 @@
 									</li>
 									<li>
 										<a class="nav-link" id="pills-beneficiaries-tab" data-toggle="pill" href="#pills-beneficiaries" role="tab" aria-controls="pills-beneficiaries" aria-selected="false">Beneficiaries</a>
+									</li>	
 									<li>
 										<a class="nav-link" id="pills-notifications-tab" data-toggle="pill" href="#pills-notifications" role="tab" aria-controls="pills-notifications" aria-selected="false">Notifications</a>
 									</li>									
-									</li>
-									
 								</ul>
 								<div class="tab-content" id="pills-tabContent">
 									<div class="tab-pane fade show active" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
@@ -276,25 +288,14 @@
 											</div> 
 											<span id="nameHelpBlock" class="form-text text-muted">Nickname (optional)</span>
 										</div>
-										<div class="form-group">
-											<label for="email">Email</label> 
-											<div class="input-group">
-												<div class="input-group-prepend">
-													<div class="input-group-text">
-														<i class="fa fa-envelope"></i>
-													</div>
-												</div> 
-												<input id="email" name="email" placeholder="me@example.com" type="text" aria-describedby="emailHelpBlock" required="required" class="form-control">
-											</div> 
-											<span id="emailHelpBlock" class="form-text text-muted">Email address (required)</span>
-										</div>
+
 										<div class="form-group">
 											<label for="amount">Target Amount</label> 
 											<div class="input-group">
 												<div class="input-group-prepend">
 													<div class="input-group-text">$</div>
 												</div> 
-												<input id="amount" name="amount" placeholder="1000" type="text" aria-describedby="amountHelpBlock" class="form-control"> 
+												<input id="amount" name="amount" placeholder="1000" type="number" aria-describedby="amountHelpBlock" class="form-control"> 
 												<div class="input-group-append">
 													<div class="input-group-text">.00</div>
 												</div>
@@ -305,7 +306,6 @@
 									
 									<div class="tab-pane fade" id="pills-places" role="tabpanel" aria-labelledby="pills-places-tab">
 										<div class="form-group">
-											<label for="places"></label> 
 											<select multiple="multiple" id="places" name="places" aria-describedby="placesHelpBlock" class="form-control">
 												<option value='act'>Australian Capital Territory</option>
 												<option value='nsw'>New South Wales</option>
@@ -319,7 +319,6 @@
 											<span id="placesHelpBlock" class="form-text text-muted">Select one or more states that are important to you</span>
 										</div>
 										<div class="form-group">
-											<label for="otherPlaces"></label> 
 											<div class="input-group">
 												<div class="input-group-prepend">
 													<div class="input-group-text">
@@ -333,25 +332,23 @@
 									</div>
 									<div class="tab-pane fade" id="pills-goals" role="tabpanel" aria-labelledby="pills-goals-tab">
 										<div class="form-group">
-											<label for="goals"></label> 
 											<select multiple="multiple" id="goals" name="goals" aria-describedby="goalsHelpBlock" class="form-control">
 												<option value='animals'>Preventing or relieving suffering of animals</option>
-												<option value='culture'>Advancing Culture</option>
-												<option value='education'>Advancing Education</option>
-												<option value='health'>Advancing Health</option>
+												<option value='culture'>Advancing culture</option>
+												<option value='education'>Advancing education</option>
+												<option value='health'>Advancing health</option>
 												<option value='advocacy'>Promote or oppose a change to the law policy or practice</option>
 												<option value='environment'>Advancing the natural environment</option>
 												<option value='humanrights'>Promoting or protecting human rights</option>
 												<option value='generalpublic'>Purposes beneficial to the general public</option>
 												<option value='reconcilation'>Promoting reconciliation mutual respect and tolerance</option>
-												<option value='religion'>Advancing Religion</option>
+												<option value='religion'>Advancing religion</option>
 												<option value='welfare'>Advancing social or public welfare</option>
-												<option value='security'>Advancing the security or safety of Australia or the Australian public</option>
+												<option value='security'>Advancing the security or safety of Australia</option>
 											</select> 
 											<span id="goalsHelpBlock" class="form-text text-muted">Select one or more goals that are important to you</span>
 										</div>
 										<div class="form-group">
-											<label for="otherGoals"></label> 
 											<div class="input-group">
 												<div class="input-group-prepend">
 													<div class="input-group-text">
@@ -365,39 +362,37 @@
 									</div>
 									<div class="tab-pane fade" id="pills-beneficiaries" role="tabpanel" aria-labelledby="pills-beneficiaries-tab">
 										<div class="form-group">
-											<label for="beneficiaries"></label> 
 											<select multiple="multiple" id="beneficiaries" name="beneficiaries" aria-describedby="beneficiariesHelpBlock" class="form-control">
 												<option value='aboriginaltsi'>Aboriginal or Torres Straight Islander</option>
 												<option value='adults'>Adults</option>
-												<option value='elderly'>Aged Persons</option>
+												<option value='elderly'>Aged persons</option>
 												<option value='children'>Children</option>
-												<option value='overseas'>Communities Overseas</option>
-												<option value='earlychildhood'>Early Childhood</option>
-												<option value='ethnic'>Ethnic Groups</option>
+												<option value='overseas'>Communities overseas</option>
+												<option value='earlychildhood'>Early childhood</option>
+												<option value='ethnic'>Ethnic groups</option>
 												<option value='families'>Families</option>
 												<option value='females'>Females</option>
-												<option value='poverty'>Financially Disadvantaged</option>
-												<option value='lgbtqia+'>Gay Lesbian and Bisexual</option>
+												<option value='poverty'>Financially disadvantaged</option>
+												<option value='lgbtqia+'>Gay lesbian and bisexual</option>
 												<option value='general'>General communities</option>
 												<option value='males'>Males</option>
 												<option value='refugees'>Migrants refugees and asylum seekers</option>
-												<option value='others'>Other Beneficiaries</option>
-												<option value='charities'>Other Charities</option>
+												<option value='others'>Other beneficiaries</option>
+												<option value='charities'>Other charities</option>
 												<option value='homeless'>People at risk of homelessness</option>
-												<option value='illness'>People with Chronic Illnesses</option>
-												<option value='disabled'>People with Disabilities</option>
+												<option value='illness'>People with chronic illnesses</option>
+												<option value='disabled'>People with disabilities</option>
 												<option value='offenders'>Pre or post release offenders</option>
 												<option value='rural'>Rural regional and remote communities</option>
-												<option value='unemployed'>Unemployed Persons</option>
+												<option value='unemployed'>Unemployed persons</option>
 												<option value='veterans'>Veterans or their families</option>
 												<option value='crimevictims'>Victims of crime</option>
-												<option value='disasters'>Victims of Disasters</option>
+												<option value='disasters'>Victims of disasters</option>
 												<option value='youth'>Youth</option>
 											</select> 
 											<span id="beneficiariesHelpBlock" class="form-text text-muted">Select one more more beneficiaries that are important to you</span>
 										</div>
 										<div class="form-group">
-											<label for="otherBeneficiaries"></label> 
 											<div class="input-group">
 												<div class="input-group-prepend">
 													<div class="input-group-text">
@@ -414,31 +409,31 @@
 											<div class="col-12">
 												<div class="custom-controls-stacked">
 													<div class="custom-control custom-checkbox">
-														<input name="Notification" id="Notification_0" type="checkbox" aria-describedby="NotificationHelpBlock" class="custom-control-input" value="submit" checked="checked"> 
+														<input name="notifications" id="Notification_0" type="checkbox" aria-describedby="NotificationHelpBlock" class="custom-control-input" value="submit" checked="checked" disabled="disabled"> 
 														<label for="Notification_0" class="custom-control-label">Whenever I submit a receipt</label>
 													</div>
 												</div>
 												<div class="custom-controls-stacked">
 													<div class="custom-control custom-checkbox">
-														<input name="Notification" id="Notification_1" type="checkbox" aria-describedby="NotificationHelpBlock" class="custom-control-input" value="monthly"> 
+														<input name="notifications" id="Notification_1" type="checkbox" aria-describedby="NotificationHelpBlock" class="custom-control-input" value="monthly"> 
 														<label for="Notification_1" class="custom-control-label">Monthly summary</label>
 													</div>
 												</div>
 												<div class="custom-controls-stacked">
 													<div class="custom-control custom-checkbox">
-														<input name="Notification" id="Notification_2" type="checkbox" aria-describedby="NotificationHelpBlock" class="custom-control-input" value="eofy"> 
+														<input name="notifications" id="Notification_2" type="checkbox" aria-describedby="NotificationHelpBlock" class="custom-control-input" value="eofy"> 
 														<label for="Notification_2" class="custom-control-label">End of Financial Year summary</label>
 													</div>
 												</div>
 												<div class="custom-controls-stacked">
 													<div class="custom-control custom-checkbox">
-														<input name="Notification" id="Notification_3" type="checkbox" aria-describedby="NotificationHelpBlock" class="custom-control-input" value="target" checked="checked"> 
+														<input name="notifications" id="Notification_3" type="checkbox" aria-describedby="NotificationHelpBlock" class="custom-control-input" value="target" checked="checked"> 
 														<label for="Notification_3" class="custom-control-label">When I achieve my target</label>
 													</div>
 												</div>
 												<div class="custom-controls-stacked">
 													<div class="custom-control custom-checkbox">
-														<input name="Notification" id="Notification_4" type="checkbox" aria-describedby="NotificationHelpBlock" class="custom-control-input" value="match" checked="checked"> 
+														<input name="notifications" id="Notification_4" type="checkbox" aria-describedby="NotificationHelpBlock" class="custom-control-input" value="match" checked="checked"> 
 														<label for="Notification_4" class="custom-control-label">When there are relevant matching offers</label>
 													</div>
 												</div> 
@@ -448,14 +443,44 @@
 									</div>								
 								</div>						
 								<div class="form-group">
-									<button name="submit" type="submit" class="btn btn-primary">Register</button>
+									<div class="custom-control custom-checkbox mt-2">
+										<input name="consent" id="consent_0" type="checkbox" class="custom-control-input" value="consent" required> 
+										<label for="consent_0" class="custom-control-label">I have read and agree to the Terms and Conditions and Privacy Statement (required).</label>
+									</div>
+									<button name="submit" type="submit" class="btn btn-primary mt-3 " id="btn-submit">Register</button>
 								</div>
 							</form>
 						</div>	
                     </div>
                 </div>
             </div>
-        </section>
+		</section>
+	
+	<!-- Modal -->
+
+		<div class="modal fade" id="submit-dialog" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content" style="">
+					<div class="modal-body">
+						<div id="spinner" class="text-center">
+							<img height="100px;" width="100px;" src="img/spinner.gif">
+							<br/><br/><h2>Registering ... </h2><br/>
+						</div>
+						<div id="check" style="display:none" class="text-center">
+							<img height="100px;" width="100px;" src="img/check.png">
+							<br/><br/><h2>Success!</h2><br/>
+							<h4>You will receive an email with further instructions shortly.</h4>
+						</div>			
+						<div id="error" style="display:none" class="text-center">
+							<img height="100px;" width="100px;" src="img/exclamation.png">
+							<br/><br/><h2>Uh oh ... </h2><br/>
+							<h4>Something has gone wrong with this registration.</h4><br/>
+							<h5>Please drop a note to <a href="mailto:support@donorbuddy.au">support@donorbuddy.au</a> to get support.</h5>											
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
         <footer class="footer text-center">
             <div class="container">
                 <div class="row">
@@ -487,10 +512,10 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
         <!-- Third party plugin JS-->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
-        <!-- Contact form JS-->
-        <script src="assets/mail/jqBootstrapValidation.js"></script>
-        <script src="assets/mail/contact_me.js"></script>
+
         <!-- Core theme JS-->
         <script src="js/scripts.js"></script>
+		
+        <script src="js/main.js"></script>
     </body>
 </html>
