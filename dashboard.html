@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <title>DonorBuddy - Give Your Best</title>
+        <!-- Font Awesome icons (free version)-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" crossorigin="anonymous"></script>
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="css/styles.css" rel="stylesheet">
+        <!-- Fonts CSS-->
+        <link rel="stylesheet" href="css/heading.css">
+        <link rel="stylesheet" href="css/body.css">
+    </head>
+    <body id="page-top">
+        <nav class="navbar navbar-expand-lg bg-secondary fixed-top" id="mainNav">
+            <div class="container"><a class="navbar-brand js-scroll-trigger" href="index.html#page-top">DonorBuddy</a>
+                <button class="navbar-toggler navbar-toggler-right font-weight-bold bg-primary text-white rounded" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">Menu <i class="fas fa-bars"></i></button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav ml-auto
+						<li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#page-top">Home</a>
+                        </li>
+                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#tracking">Tracking</a>
+                        </li>
+                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#analysis">Analysis</a>
+                        </li>
+                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#planning">Planning</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <header class="masthead bg-primary text-white text-center">
+            <div class="container d-flex align-items-center flex-column">
+                <!-- Masthead Heading-->
+                <h1 class="page-section-heading mb-0">Your Giving Dashboard</h1>
+                <!-- Icon Divider-->
+                <div class="divider-custom divider-light">
+                    <div class="divider-custom-line"></div>
+                    <div class="divider-custom-icon"><i class="fas fa-hand-holding-heart"></i></div>
+                    <div class="divider-custom-line"></div>
+                </div>
+                <!-- Login form -->
+				<form id="loginForm" action="">
+					<div class="form-group row" style="margin-left: -1rem;">
+						<div class="col-6">	
+							<div class="input-group">
+								<div class="input-group-prepend">
+									<div class="input-group-text" style="">
+										<i class="fa fa-user-circle"></i>
+									</div>
+								</div> 
+								<input id="userID" name="userID" placeholder="DB:8dbe7cbb07a2e536" type="text" aria-describedby="userIDHelpBlock" class="form-control"  style="border-color: #9cc3d5;" required>								
+								
+							</div> 
+							<span id="userIDHelpBlock" class="form-text text-muted">Enter the UserID you were allocated when you registered (required)</span>
+						</div>
+						<div class="col-2">
+								<button name="login" type="submit" class="btn btn-secondary" id="btn-login">Login</button>
+						</div>
+						<div class="col-2">
+								<button name="demo" type="" class="btn btn-info" id="btn-demo" onclick="$('#userID').val('demo'); loginBtn.click();">Demo</button>
+						</div>
+					</div>
+				</form>
+            </div>
+        </header>		
+        <section class="page-section portfolio" id="tracking">
+            <div class="container">
+                <!-- Tracking Section Heading-->
+                <div class="text-center">
+                    <h2 class="page-section-heading text-secondary mb-0 d-inline-block">Tracking</h2>
+                </div>
+                <!-- Icon Divider-->
+                <div class="divider-custom">
+                    <div class="divider-custom-line"></div>
+                    <div class="divider-custom-icon"><i class="fas fa-hand-holding-heart"></i></div>
+                    <div class="divider-custom-line"></div>
+                </div>
+            </div>
+        </section>
+        <section class="page-section bg-primary text-white mb-0" id="analysis">
+            <div class="container">
+                <!-- Analysis Section Heading-->
+                <div class="text-center">
+                    <h2 class="page-section-heading d-inline-block text-white">Analysis</h2>
+                </div>
+                <!-- Icon Divider-->
+                <div class="divider-custom divider-light">
+                    <div class="divider-custom-line"></div>
+                    <div class="divider-custom-icon"><i class="fas fa-hand-holding-heart"></i></div>
+                    <div class="divider-custom-line"></div>
+                </div>
+                <!-- Analysis Section Content-->
+                <div class="row justify-content-center">
+                    
+                </div>
+            </div>
+		</section>
+		
+		 <section class="page-section" id="planning">
+            <div class="container">
+                <!-- Planning Section Heading-->
+                <div class="text-center">
+                    <h2 class="page-section-heading text-secondary d-inline-block mb-0">Planning</h2>
+                </div>
+                <!-- Icon Divider-->
+                <div class="divider-custom">
+                    <div class="divider-custom-line"></div>
+                    <div class="divider-custom-icon"><i class="fas fa-hand-holding-heart"></i></div>
+                    <div class="divider-custom-line"></div>
+                </div>
+                <!-- Planning Section Content-->
+                <div class="row justify-content-center">
+                    
+                </div>
+            </div>
+		</section>
+	
+	<!-- Modal -->
+
+		<div class="modal fade" id="submit-dialog" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content" style="">
+					<div class="modal-body">
+						<div id="spinner" class="text-center">
+							<img height="100px;" width="100px;" src="assets/img/spinner.gif">
+							<br/><br/><h2 class="portfolio-modal-title text-secondary mb-0">Registering ... </h2><br/>
+						</div>
+						<div id="check" style="display:none" class="text-center">
+							<img height="100px;" width="100px;" src="assets/img/check.png">
+							<br/><br/><h2 class="portfolio-modal-title text-secondary mb-0">Success!</h2><br/>
+							<p>You will receive an email with further instructions shortly.</p>
+						</div>			
+						<div id="error" style="display:none" class="text-center">
+							<img height="100px;" width="100px;" src="assets/img/exclamation.png">
+							<br/><br/><h2 class="portfolio-modal-title text-secondary mb-0">Uh oh ... </h2><br/>
+							<p>Something has gone wrong with this registration.</p><br/>
+							<p><small>Please drop a note to <a href="mailto:support@donorbuddy.au">DonorBuddy</a> to get support.</small></p>											
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+        <footer class="footer text-center">
+            <div class="container">
+                <div class="row">
+                    <!-- Footer Location-->
+                    <div class="col-lg-4 mb-5 mb-lg-0">
+                        <h4 class="mb-4">Coverage</h4>
+                        <p class="pre-wrap lead mb-0">All 59,708 Australian charities registered with ACNC are supported. </p>
+                    </div>
+                    <!-- Footer Social Icons-->
+                    <div class="col-lg-4 mb-5 mb-lg-0">
+                        <h4 class="mb-4">Share</h4><a class="btn btn-outline-light btn-social mx-1" href="https://www.facebook.com/StartBootstrap"><i class="fab fa-fw fa-facebook-f"></i></a><a class="btn btn-outline-light btn-social mx-1" href="https://www.twitter.com/sbootstrap"><i class="fab fa-fw fa-twitter"></i></a><a class="btn btn-outline-light btn-social mx-1" href="https://www.linkedin.com/in/startbootstrap"><i class="fab fa-fw fa-linkedin-in"></i></a><a class="btn btn-outline-light btn-social mx-1" href="https://www.dribble.com/startbootstrap"><i class="fab fa-fw fa-dribbble"></i></a>
+                    </div>
+                    <!-- Footer About Text-->
+                    <div class="col-lg-4">
+                        <h4 class="mb-4">Privacy</h4>
+                        <p class="pre-wrap lead mb-0">Your data is important to us too so please review our Privacy Statement</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- Copyright Section-->
+        <section class="copyright py-4 text-center text-white">
+            <div class="container"><small class="pre-wrap">Brought to you by Warm Glow Labs. Proudly made in Melbourne, AU. </small></div>
+        </section>
+        <!-- Scroll to Top Button (Only visible on small and extra-small screen sizes)-->
+        <div class="scroll-to-top d-lg-none position-fixed"><a class="js-scroll-trigger d-block text-center text-white rounded" href="#page-top"><i class="fa fa-chevron-up"></i></a></div>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+        <!-- Third party plugin JS-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+
+        <!-- Core theme JS-->
+        <script src="js/scripts.js"></script>
+		
+        <script src="js/dashboard.js"></script>
+    </body>
+</html>
