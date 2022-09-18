@@ -4,7 +4,7 @@
 **
 */
 
-const url = "https://script.google.com/macros/s/AKfycbxNZqGv_i47AzZMmWKlWdRGIaJxGBIP7TdhzXBbeVVT02bcVYoGKYXGcand_g63RDQ/exec"; // API endpoint
+const url = "https://script.google.com/macros/s/AKfycbyiAW8ZZzuRjWhX_3rUdHYfcXFMVrnGqv_8Wyj2znpfpg23_LAId0lDUtLFkmjRzyHL/exec"; // API endpoint
 const formElem = document.getElementById("registrationForm");
 const emailInput = document.getElementById("email");
 const subbtn = document.getElementById("btn-submit");
