@@ -10,7 +10,8 @@ const userID = document.getElementById("userID");
 const loginBtn = document.getElementById("btn-login");
 var userInfo = "null";
 var gridOptions = {};
-var debug={};
+var debugO={};
+var debugA=[];
 
 let params = new URLSearchParams(document.location.search);		// extract 'user' parameter for query string
 let userQuery = params.get("user");
@@ -46,29 +47,27 @@ async function fetchUserInfo() {
 		return;
 	}
 	
-	var h = userInfo.transactions[0];								// grab headers from first row
+	displayTracking();
 	
-	var data = userInfo.transactions.slice(1);						// grab data from rest of table
+	displayAnalysis();
+	
+	displayPlanning();
+	
+	return;
+}
+
+function displayTracking(){
+	
+	// function to tranform transaction data and create dataGrid for browsing;
+	// also creates inspector panel to display charity details
+	
+	const h = userInfo.transactions[0];								// grab headers from first row
+	
+	const data = userInfo.transactions.slice(1);						// grab data from rest of table
 	
 	// build headers
 
-/*	var hdrs = [];													
-
-	for (var i=0; i<h.length; i++) {
-		hide=false;
-		fmt='';
-		if (h[i]=='PrivateID' || /Total/i.test(h[i]))
-			hide=true;
-		if(h[i]=='Date')
-			fmt = params => dateFormatter(params.value);
-		if(i>22)
-			fmt = params => percentFormatter(params.value);
-		if(h[i]=='Amount')
-			fmt = params => currencyFormatter(params.value);
-		hdrs.push({'field':h[i],'hide':hide,'valueFormatter':fmt});
-	} 
-
-
+/*
 PrivateID	ABN	Date	Amount	Charity Name	Website	Size	Location	Places	Goals	Beneficiaries	Tax Status	ACNC ID	TotalGrossIncomeGovernmentGrants	TotalGrossIncomeOtherRevenues	TotalGrossIncomeDonationsAndRequests	TotalGrossIncomeGoodsOrServices	TotalGrossIncomeInvestments	TotalExpensesGrantsAndDonationsInAustralia	TotalExpensesGrantsAndDonationsOutsideAustralia	TotalExpensesInterest	TotalExpensesOther	TotalExpensesEmployee	DonorReliance	EmployeeShare	DonationRank		
 */
 
@@ -103,12 +102,12 @@ PrivateID	ABN	Date	Amount	Charity Name	Website	Size	Location	Places	Goals	Benefi
 		},
 		{ field: 'Charity Name', hide: false, width: 300, headerTooltip: 'Registered name of the charity'},
 		{ field: 'Amount', hide: false, width: 120, type: 'rightAligned', filter: 'agNumberColumnFilter', valueFormatter: params => currencyFormatter(params.value), headerTooltip: 'Amount you donated'},
-		{ field: 'Goals', hide: false, cellRenderer: params => tagRenderer(params), headerTooltip: 'Goals of the charity'},
-		{ field: 'Places', hide: false, cellRenderer: params => tagRenderer(params), headerTooltip: 'Places where the charity operates'},
-		{ field: 'Beneficiaries', hide: false, cellRenderer: params => tagRenderer(params), headerTooltip: 'Beneficiaries of the charity'},
 		{ field: 'DonorReliance', hide: false, width: 120, type: 'rightAligned', wrapHeaderText: true, valueFormatter: params => percentFormatter(params.value), headerTooltip: 'Share of income from donations'},
 		{ field: 'EmployeeShare', hide: false, width: 120, type: 'rightAligned', wrapHeaderText: true, filter: 'agNumberColumnFilter', valueFormatter: params => percentFormatter(params.value),headerTooltip: 'Share of expenses going to employees'},
 		{ field: 'DonationRank', hide: false, width: 120, type: 'rightAligned', wrapHeaderText: true, filter: 'agNumberColumnFilter', valueFormatter: params => percentFormatter(params.value), headerTooltip: 'Rank within all Australian charities by total donations'},
+		{ field: 'Goals', hide: false, cellRenderer: params => tagRenderer(params), headerTooltip: 'Goals of the charity'},
+		{ field: 'Places', hide: false, cellRenderer: params => tagRenderer(params), headerTooltip: 'Places where the charity operates'},
+		{ field: 'Beneficiaries', hide: false, cellRenderer: params => tagRenderer(params), headerTooltip: 'Beneficiaries of the charity'},
 	];		
 
 	// Grid Options are properties passed to the grid
@@ -137,11 +136,6 @@ PrivateID	ABN	Date	Amount	Charity Name	Website	Size	Location	Places	Goals	Benefi
    // new grid instance, passing in the hosting DIV and Grid Options
    new agGrid.Grid(eGridDiv, gridOptions);
 
-	// move columns into positions
-	
-	//gridOptions.columnApi.moveColumns(['Date', 'Charity Name', 'Amount'], 0);
-	//gridOptions.api.sizeColumnsToFit();
-
 	return;
 }
 
@@ -152,14 +146,32 @@ function dateFormatter(params) {
 	return d.toLocaleDateString();
 }
 
-function currencyFormatter(params) {
-	return "$"+params;
+function currencyFormatter(params,p) {
+	if (params=='0' | !params)
+		return '';
+
+	if (p==0) 
+		return '$'+Math.round(params);
+	
+	if (!p)
+		p=2;						// default precision
+
+	return '$'+params.toFixed(p);
 }
 
 function percentFormatter(params) {
 	if (!params || params == '')
 		return "";
 	return String(Math.floor(parseFloat(params)*100+0.5))+"%";
+}
+
+function monthFormatter(params) {
+	if (!params || params == '')
+		return '';
+	const y = params.substr(0,4);
+	const m = params.substr(5,2);
+	
+	return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][m-1] + ', ' + y;
 }
 
 function tagRenderer(params) {
@@ -179,7 +191,7 @@ function toggleTag(tag, col) {
 	// Get a reference to the filter instance
 	const filterInstance = gridOptions.api.getFilterInstance(col); 
 
-	debug=filterInstance;
+	debugO=filterInstance;
 	if(!filterInstance.appliedModel || filterInstance.appliedModel=='') {
 		// if there's no filter, set the filter model to be the tag
 		filterInstance.setModel({
@@ -204,8 +216,6 @@ function inspectCharity(id) {
 	const row = parseInt(id)+1;
 	elem = document.getElementById('inspector');
 	elem.style.display="block";
-	
-	//elem.innerHTML = userInfo.transactions[row]['Charity Name'];
 	
 	const u = userInfo.transactions[row];
 	
@@ -253,12 +263,317 @@ function inspectCharity(id) {
 		}
 	}
 	
-	console.log(row);
 	elem.style.display="block";
 	
 	return;
 }
 	
+function displayAnalysis(){
+
+	// Function to create dataset for charting, builds and attaches interactive charting
+	// First visualisation is cumulative chart: a stacked line chart of transaction amounts by tax status
+	// Second visualisation is monthlyChart: a stacked column chart of transaction amounts by month by charity
+	// Third, fourth and fifth is breakdown{goals, places, beneficiaries}: a bar chart of transaction amount by category
+	
+	const h = userInfo.transactions[0];								// grab headers from first row
+	
+	const data = userInfo.transactions.slice(1);					// grab data from rest of table
+	
+	
+
+	// build arrays of unique months, charities, tax statuses
+	var uniqMonths = [];
+	var uniqCharities = [];
+	var uniqTax = [''];
+	var totalAmount = 0;
+	
+	uniqMonths=['2022-07','2022-08','2022-09','2022-10','2022-11','2022-12','2023-01','2023-02','2023-03','2023-04','2023-05','2023-06','2023-07','2023-08','2023-09','2023-10','2023-11','2023-12']; // TODO: automate
+
+	for (var i in data) {
+		
+		//var month = data[i]['Date'].substr(0,7);
+		var charity = data[i]['Charity Name'];
+		var tax = data[i]['Tax Status'];
+		totalAmount += data[i]['Amount'];
+		
+		//if (!uniqMonths.includes(month))
+		//	uniqMonths.push(month);
+	
+		if (!uniqCharities.includes(charity))
+			uniqCharities.push(charity);
+		
+		if (!uniqTax.includes(tax))
+			uniqTax.push(tax);
+	}
+	
+	// build transformed data
+	var transData = [];
+	for (var i in uniqMonths) {
+		transData[i] = {month: uniqMonths[i]};
+		
+		for (var j in uniqCharities) {
+			var a=0;
+			for (var k in data) {
+				if (data[k]['Date'].substr(0,7)==uniqMonths[i] && data[k]['Charity Name'] == uniqCharities[j])
+					a+= data[k]['Amount'];
+			}
+			transData[i][uniqCharities[j]] = a;
+		}
+		
+		for (var m in uniqTax) {
+			var a=0;
+			for (var n in data) {
+				if (data[n]['Date'].substr(0,7)==uniqMonths[i] && data[n]['Tax Status']== uniqTax[m])
+					a+=data[n]['Amount'];
+			}
+			
+			// cumulative amounts
+			
+			if(i==0)
+				transData[i][uniqTax[m]] = a;
+			else
+				transData[i][uniqTax[m]] = transData[i-1][uniqTax[m]] + a;
+		}
+	}
+	 
+	// build series data for cumulative tax chart
+	var seriesCumulative=[];
+	for (var i in uniqTax) {
+		seriesCumulative.push( {
+			type: 'area',
+			xKey: 'month',
+			yKey: uniqTax[i],
+			yName: uniqTax[i],
+			stacked: true,
+			tooltip: {
+				renderer: function (params) {
+					return {
+						content: monthFormatter(params.xValue)+': '+currencyFormatter(params.yValue),
+						title: params.yName
+					};
+				}
+			}
+		});
+	}
+	 
+	// build series data for monthly chart
+	var seriesMonthly=[];
+	for (var i in uniqCharities) {
+		seriesMonthly.push( {
+			type: 'column',
+			xKey: 'month',
+			yKey: uniqCharities[i],
+			yName: uniqCharities[i],
+			stacked: true,
+			label: { 
+				formatter: params => currencyFormatter(params.value,0),
+				fontSize: 10
+				},
+			tooltip: {
+				renderer: function (params) {
+					return {
+						content: monthFormatter(params.xValue)+': '+currencyFormatter(params.yValue),
+						title: params.yName
+					};
+				}
+			}
+		});
+	}
+	
+	// set up cumulative charting options
+	
+	var cumulativeChartOptions = {
+		container: document.getElementById('cumulativeChart'),
+		theme: 'ag-pastel',
+		/*navigator: {
+			enabled: true				// sliding window
+		},
+		*/
+		title: {
+			text: 'Cumulative Gift Amounts',
+		},
+		subtitle: {
+			text: 'By tax status',
+		},
+		axes: [
+			{
+				type: 'number',
+				position: 'left',
+				label: {
+					format: '$~s',
+					formatter: (params) => params.formatter(params.value).replace('k', 'K').replace('G', 'B'),
+			  },
+			},
+			{
+				type: 'category',
+				position: 'bottom',
+				label: {
+					formatter: (params) => {return monthFormatter(params.value).substr(0,3);}			// just show month; year should be clear from context
+			  },
+			},
+		  ],
+		data: transData,
+		series: seriesCumulative
+	}
+	
+	debugA = seriesCumulative;
+	
+	agCharts.AgChart.create(cumulativeChartOptions);
+	
+
+	// set up monthly charting options 
+	var monthlyChartOptions = {
+		container: document.getElementById('monthlyChart'),
+		theme: 'ag-pastel',
+		/*navigator: {
+			enabled: true				// sliding window
+		},
+		*/
+		title: {
+			text: 'Monthly Gift Amounts',
+		},
+		subtitle: {
+			text: 'By charity',
+		},
+		axes: [
+			{
+				type: 'number',
+				position: 'left',
+				label: {
+					format: '$~s',
+					formatter: (params) => params.formatter(params.value).replace('k', 'K').replace('G', 'B'),
+			  },
+			},
+			{
+				type: 'category',
+				position: 'bottom',
+				label: {
+					formatter: (params) => {return monthFormatter(params.value).substr(0,3);}			// just show month; year should be clear from context
+			  },
+			},
+		  ],
+		legend: {enabled: false},
+		data: transData,
+		series: seriesMonthly
+	}
+	
+	debugA = seriesMonthly;
+	
+	agCharts.AgChart.create(monthlyChartOptions);
+	
+	// build Goals, Places and Beneficiaries data
+	
+	var uniq = {'Goals': {}, 'Places': {}, 'Beneficiaries': {} };
+	var chartData = {};
+	var chartOptions = {};
+	
+	for (var c in uniq) {												// iterate through each category dimension (goals, place, beneficiaries)
+
+		// accumulate giving amount values by category
+		for (var i in data) {
+			data[i][c].forEach(
+				(x) => {
+					if (uniq[c][x])
+						uniq[c][x] += data[i]['Amount'];
+					else 
+						uniq[c][x] = data[i]['Amount']
+				});
+		}
+		
+		debugO = uniq;
+		
+		chartData[c]=[];
+		
+		for (var u in uniq[c])
+			if (userInfo['details'][c].includes(u.toLowerCase())) {					// user's preferred category value
+				chartData[c].push({'Category': u, 'Other': '', 'Preferred': uniq[c][u]});
+				//chartData[c].push({'Category': u, 'AmountPref': uniq[c][u]});
+			}
+			else {
+				chartData[c].push({'Category': u, 'Other': uniq[c][u], 'Preferred': ''});
+				//chartData[c].push({'Category': u, 'AmountPref': 0});
+			}
+			
+		// sort categories from biggest to smallest by Amount
+		
+		chartData[c].sort( (a,b)=>{return (b.Preferred+b.Other) - (a.Preferred+a.Other);})
+		
+		// set up charting options
+			chartOptions[c] = {
+			container: document.getElementById('breakdown'+c),
+			theme: 'ag-pastel',
+			/*navigator: {
+				enabled: true
+			},
+			*/
+			title: {
+				text: 'Breakdown by '+c,
+			},
+			subtitle: {
+				text: 'Across your preferred categories and others',
+			},
+			axes: [
+				{
+					type: 'number',
+					position: 'left',
+					label: {
+						format: '$,d',
+					},
+				},
+				{
+					type: 'category',
+					position: 'bottom',
+				},
+			  ],
+			legend: {enabled: true, position: 'bottom', },
+			data: chartData[c],
+			series: [{ 
+				type: 'column', xKey: 'Category', yKey: 'Other', stacked: true,
+				label: {
+					formatter: params => currencyFormatter(params.value,0),
+					fontSize: 10
+				},
+				tooltip: {
+					renderer: function (params) {
+						return {
+							content: 'Amount: '+currencyFormatter(params.yValue)+'  ('+percentFormatter(params.yValue/totalAmount)+')',
+							title: refDataFlat[params.xValue]
+						};
+					}
+				},
+				fill: '#9cc3d5', 		//'#ebcc87', 
+				stroke: '#9cc3d5', 		//'#ebcc87', 
+			},
+			{ 
+				type: 'column', xKey: 'Category', yKey: 'Preferred', stacked: true,
+				label: { 
+					formatter: params => currencyFormatter(params.value,0),
+					fontSize: 10
+				},
+				tooltip: {
+					renderer: function (params) {
+						return {
+							content: 'Amount: '+currencyFormatter(params.yValue)+'  ('+percentFormatter(params.yValue/totalAmount)+')',
+							title: refDataFlat[params.xValue]
+						};
+					}
+				},
+				fill: '#ebcc87', 		//'#ebcc87', 
+				stroke: '#ebcc87', 		//'#ebcc87', 
+			}]
+		}
+		
+		agCharts.AgChart.create(chartOptions[c]);
+	}
+	debugA = chartData;
+	return;
+}
+
+function displayPlanning() {
+	
+	return;	
+}
+
 function prefillForm() {
 	// attempt to prefill the form using URL query string
 	
@@ -271,3 +586,64 @@ if (userQuery) {
 	userID.value = userQuery;									// set form value, if found
 	loginBtn.click();											// click the login button
 }
+
+
+
+// copy of reference data
+// sourced from Google Sheets
+
+const refData = {
+'Goals': {	
+	'Animals' :'Preventing or relieving suffering of animals',
+	'Culture' :'Advancing culture',
+	'Education' :'Advancing education',
+	'Health' :'Advancing health',
+	'Advocacy' :'Promote or oppose a change to the law policy or practice',
+	'Environment' :'Advancing the natural environment',
+	'HumanRights' :'Promoting or protecting human rights',
+	'GeneralPublic' :'Purposes beneficial to the general public',
+	'Reconcilation' :'Promoting reconciliation mutual respect and tolerance',
+	'Religion' :'Advancing religion',
+	'Welfare' :'Advancing social or public welfare',
+	'Security' :'Advancing the security or safety of Australia}'},
+'Places': {	
+	'ACT' :'Australian Capital Territory',
+	'NSW' :'New South Wales',
+	'NT' :'Northern Territory',
+	'QLD' :'Queensland',
+	'SA' :'South Australia',
+	'TAS' :'Tasmania',
+	'VIC' :'Victoria',
+	'WA' :'Western Australia'},
+'Beneficiaries': {	
+	'AboriginalTSI' :'Aboriginal or Torres Straight Islander',
+	'Adults' :'Adults',
+	'Elderly' :'Aged persons',
+	'Children' :'Children',
+	'Overseas' :'Communities overseas',
+	'EarlyChildhood' :'Early childhood',
+	'Ethnic' :'Ethnic groups',
+	'Families' :'Families',
+	'Females' :'Females',
+	'Poverty' :'Financially disadvantaged',
+	'LGBTQIA+' :'Gay lesbian and bisexual',
+	'General' :'General communities',
+	'Males' :'Males',
+	'Refugees' :'Migrants refugees and asylum seekers',
+	'Others' :'Other beneficiaries',
+	'Charities' :'Other charities',
+	'Homeless' :'People at risk of homelessness',
+	'Illness' :'People with chronic illnesses',
+	'Disabled' :'People with disabilities',
+	'Offenders' :'Pre or post release offenders',
+	'Rural' :'Rural regional and remote communities',
+	'Unemployed' :'Unemployed persons',
+	'Veterans' :'Veterans or their families',
+	'CrimeVictims' :'Victims of crime',
+	'Disasters' :'Victims of disasters',
+	'Youth' :'Youth'} };
+	
+var refDataFlat = {};
+for(var c in refData)
+	for (var u in refData[c])
+		refDataFlat[u]=refData[c][u];

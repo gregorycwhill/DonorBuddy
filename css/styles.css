@@ -3910,11 +3910,20 @@ input[type=button].btn-block {
 
 .nav-pills .nav-link {
   border-radius: 0.5rem;
+  color: #fff;
+  background-color: #9cc3d5; //#e9ecef
+
+}
+
+.nav-pills .nav-link:hover, .nav-link:focus {
+  text-decoration: none;
+  background-color: #e9ecef;
+  color: #9cc3d5;
 }
 .nav-pills .nav-link.active,
 .nav-pills .show > .nav-link {
-  color: #fff;
-  background-color: #9cc3d5;
+  color: #9cc3d5; // #fff; 
+  background-color: #fff; //#9cc3d5;
 }
 
 .nav-fill .nav-item {
