@@ -24,8 +24,10 @@ formElem.addEventListener("submit", (e) => {
 	
 	// set form elements readonly and disable submit button
 
-	$('#btn-login').prop('disabled','disabled').attr('style','background-color: gray');
-
+	//$('#btn-login').prop('disabled','disabled').attr('style','background-color: gray').text('logout');
+	
+	$('#btn-login').attr('style','background-color: gray').text('logout').click(function(){location.href="dashboard.html";});
+	
 	$("#loginForm :input").prop('readonly', true);
 
 	fetchUserInfo();
@@ -50,6 +52,7 @@ async function fetchUserInfo() {
 	displayTracking();
 	
 	displayAnalysis();
+	
 	
 	displayPlanning();
 	
@@ -139,7 +142,6 @@ PrivateID	ABN	Date	Amount	Charity Name	Website	Size	Location	Places	Goals	Benefi
 	return;
 }
 
-
 function dateFormatter(params) {
 	
 	var d = new Date(params);
@@ -151,12 +153,12 @@ function currencyFormatter(params,p) {
 		return '';
 
 	if (p==0) 
-		return '$'+Math.round(params);
+		return '$'+Math.round(params).toLocaleString('en-US');
 	
 	if (!p)
 		p=2;						// default precision
 
-	return '$'+params.toFixed(p);
+	return '$'+Number(parseFloat(params).toFixed(p)).toLocaleString('en-US', {minimumFractionDigits: p});
 }
 
 function percentFormatter(params) {
@@ -215,7 +217,6 @@ function inspectCharity(id) {
 	
 	const row = parseInt(id)+1;
 	elem = document.getElementById('inspector');
-	elem.style.display="block";
 	
 	const u = userInfo.transactions[row];
 	
@@ -279,8 +280,6 @@ function displayAnalysis(){
 	
 	const data = userInfo.transactions.slice(1);					// grab data from rest of table
 	
-	
-
 	// build arrays of unique months, charities, tax statuses
 	var uniqMonths = [];
 	var uniqCharities = [];
@@ -400,9 +399,8 @@ function displayAnalysis(){
 				type: 'number',
 				position: 'left',
 				label: {
-					format: '$~s',
-					formatter: (params) => params.formatter(params.value).replace('k', 'K').replace('G', 'B'),
-			  },
+					format: '$,d',
+				},
 			},
 			{
 				type: 'category',
@@ -416,7 +414,8 @@ function displayAnalysis(){
 		series: seriesCumulative
 	}
 	
-	debugA = seriesCumulative;
+	//debugA = seriesCumulative;
+	//debugA = transData;
 	
 	agCharts.AgChart.create(cumulativeChartOptions);
 	
@@ -441,14 +440,14 @@ function displayAnalysis(){
 				position: 'left',
 				label: {
 					format: '$~s',
-					formatter: (params) => params.formatter(params.value).replace('k', 'K').replace('G', 'B'),
+					formatter: params => currencyFormatter(params.value,0),
 			  },
 			},
 			{
 				type: 'category',
 				position: 'bottom',
 				label: {
-					formatter: (params) => {return monthFormatter(params.value).substr(0,3);}			// just show month; year should be clear from context
+					formatter: params => monthFormatter(params.value).substr(0,3),			// just show month; year should be clear from context
 			  },
 			},
 		  ],
@@ -457,7 +456,7 @@ function displayAnalysis(){
 		series: seriesMonthly
 	}
 	
-	debugA = seriesMonthly;
+	//debugA = seriesMonthly;
 	
 	agCharts.AgChart.create(monthlyChartOptions);
 	
@@ -518,6 +517,7 @@ function displayAnalysis(){
 					position: 'left',
 					label: {
 						format: '$,d',
+						formatter: params => currencyFormatter(params.value,0),
 					},
 				},
 				{
@@ -546,7 +546,7 @@ function displayAnalysis(){
 			},
 			{ 
 				type: 'column', xKey: 'Category', yKey: 'Preferred', stacked: true,
-				label: { 
+				label: {
 					formatter: params => currencyFormatter(params.value,0),
 					fontSize: 10
 				},
@@ -565,7 +565,47 @@ function displayAnalysis(){
 		
 		agCharts.AgChart.create(chartOptions[c]);
 	}
+	
 	debugA = chartData;
+	
+	// Build and display Summary panel
+	
+	const elem = document.getElementById('summary');
+	
+	const mapping = {
+		"summary-total": currencyFormatter(totalAmount,2),
+		"summary-gift": data.length,
+		"summary-charities": uniqCharities.length,
+		"summary-monthly": currencyFormatter(totalAmount/uniqMonths.length,2),
+		"summary-amount": currencyFormatter(totalAmount/data.length,2),
+		"summary-tax": currencyFormatter(transData[transData.length-1]['Item 1'],2),
+		"summary-days": Math.round((uniqMonths.length*30.5)/data.length),
+		"summary-goal": chartData['Goals'][0]['Category'],
+		"summary-place": chartData['Places'][0]['Category'],
+		"summary-beneficiary": chartData['Beneficiaries'][0]['Category'],
+		};
+	
+	//var a=0; var t=transData[transData.length-1]; alert(uniqTax+' ---'+ uniqTax.length);
+	//alert(uniqTax.forEach(function(e){if (!e) return; if(t[e])alert(' ---' +e)}));
+	
+	for (var i in mapping) {
+		switch(i) {
+			case 'insp-web':
+				document.getElementById(i).href='https://'+mapping[i];
+			break;
+			case 'insp-acnc':
+				document.getElementById(i).href='https://www.acnc.gov.au/charity/charities/'+mapping[i]+'/profile';
+			break;
+			case 'insp-abr':
+				document.getElementById(i).href='https://www.abr.business.gov.au/ABN/View?id='+mapping[i];
+			break;
+			default:
+				document.getElementById(i).innerHTML = mapping[i];
+		}
+	}
+	
+	elem.style.display='block';
+	
 	return;
 }
 

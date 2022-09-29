@@ -64,7 +64,7 @@
 								<button name="login" type="submit" class="btn btn-secondary" id="btn-login">Login</button>
 						</div>
 						<div class="col-2">
-								<button name="demo" type="" class="btn btn-info" id="btn-demo" onclick="$('#userID').val('demo'); loginBtn.click();">Demo</button>
+								<a href="dashboard.html?user=demo"><span name="demo" class="btn btn-info" id="btn-demo">Demo</span></a>
 						</div>
 					</div>
 				</form>
@@ -144,54 +144,56 @@
                     <div class="divider-custom-line"></div>
                 </div>
 				<!-- Analysis Section Content-->
-				<!-- Cumulative Chart -->
+				<!-- Summary Table and Cumulative Chart -->
 				<div class="row">
-					<div class="col-4" id="summary" style="height: 400px">
-						<h6 class="d-flex justify-content-center" id="insp-name">Giving Summary</h6>
-						<p class="d-flex justify-content-between"><a class="btn btn-light" id="insp-web" target="_blank">Website</a> <a class="btn btn-light" id="insp-acnc" target="_blank">ACNC</span> <a class="btn btn-light" id="insp-abr" target="_blank">ABR</a></p>
+					<div class="col-4" id="summary" style="height: 400px; display: none;">
+						<h5 class="d-flex justify-content-center">Giving Summary</h5>
 						<table class="table table-light table-sm table-striped table-borderless">
 							<tbody>
 								<tr>
-								  <td style="width: 25%">Location:</td>
-								  <td class="small" id="insp-location">Item</td>
+								  <td style="width: 60%; text-align:right">Total Gifts:</td>
+								  <td class="small" id="summary-total">Amount</td>
 								</tr>
 								<tr>
-								  <td>Goals:</td>
-								  <td class="small" id="insp-goals">Item1, Item2</td>
+								  <td style="text-align:right">Number of Gifts:</td>
+								  <td class="small" id="summary-gift">Amount</td>
 								</tr>
 								<tr>
-								  <td>Places:</td>
-								  <td class="small" id="insp-places">Item1, Item2</td>
+								  <td style="text-align:right">Number of Charities:</td>
+								  <td class="small" id="summary-charities">Count</td>
 								</tr>
 								<tr>
-								  <td>Beneficiaries:</td>
-								  <td class="small" id="insp-beneficiaries">Item1, Item2</td>
+								  <td style="text-align:right">Avg Monthly Donations:</td>
+								  <td class="small" id="summary-monthly">Amount</td>
 								</tr>
 								<tr>
-								  <td>Tax Status:</td>
-								  <td class="small" id="insp-tax">Item</td>
-								</tr>
-							</tbody>
-						</table>
-						
-						<table class="table table-light table-striped table-sm small">
-							<tbody>	
-								<tr style="background-color: #9cc3d5; color: white;">
-								  <td>Donor Reliance</td>
-								  <td>Employee Share</td>
-								  <td>Donation Rank</td>
-								</tr>
-								<tr class="">
-								  <td class="text-center" id="insp-reliance">Item</td>
-								  <td class="text-center" id="insp-share">Item</td>
-								  <td class="text-center" id="insp-rank">Item</td>
+								  <td style="text-align:right">Avg Gift Amount:</td>
+								  <td class="small" id="summary-amount">Amount</td>
 								</tr>								
+								<tr>
+								  <td style="text-align:right">Tax Deductible Amount:</td>
+								  <td class="small" id="summary-tax">Amount</td>
+								</tr>
+								<tr>
+								  <td style="text-align:right">Avg Days Between Gifts:</td>
+								  <td class="small" id="summary-days">Count</td>
+								</tr>								
+								<tr>
+								  <td style="text-align:right">Top Goal:</td>
+								  <td class="small" id="summary-goal">Category</td>
+								</tr>	
+								<tr>
+								  <td style="text-align:right">Top Place:</td>
+								  <td class="small" id="summary-place">Category</td>
+								</tr>	
+								<tr>
+								  <td style="text-align:right">Top Beneficiary:</td>
+								  <td class="small" id="summary-beneficiary">Category</td>
+								</tr>									
 							</tbody>
 						</table>
-						<p><span>You gave them </span><span id="insp-total">x</span><span> from </span><span id="insp-count">y</span><span> gifts.</span></p>
 					</div>
-					<div class="col-8" id="cumulativeChart" style="height: 400px">
-					</div>
+					<div class="col-8" id="cumulativeChart" style="height: 400px; margin-bottom: 2rem;"></div>
 				</div>
 				
 				<!-- Monthly Chart -->
