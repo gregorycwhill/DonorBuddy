@@ -283,20 +283,20 @@ function displayAnalysis(){
 	// build arrays of unique months, charities, tax statuses
 	var uniqMonths = [];
 	var uniqCharities = [];
-	var uniqTax = [''];
+	var uniqTax = [];
 	var totalAmount = 0;
 	
-	uniqMonths=['2022-07','2022-08','2022-09','2022-10','2022-11','2022-12','2023-01','2023-02','2023-03','2023-04','2023-05','2023-06','2023-07','2023-08','2023-09','2023-10','2023-11','2023-12']; // TODO: automate
+	const allMonths=['2022-07','2022-08','2022-09','2022-10','2022-11','2022-12','2023-01','2023-02','2023-03','2023-04','2023-05','2023-06','2023-07','2023-08','2023-09','2023-10','2023-11','2023-12']; 
 
 	for (var i in data) {
 		
-		//var month = data[i]['Date'].substr(0,7);
+		var month = data[i]['Date'].substr(0,7);
 		var charity = data[i]['Charity Name'];
 		var tax = data[i]['Tax Status'];
 		totalAmount += data[i]['Amount'];
 		
-		//if (!uniqMonths.includes(month))
-		//	uniqMonths.push(month);
+		if (!uniqMonths.includes(month))
+			uniqMonths.push(month);
 	
 		if (!uniqCharities.includes(charity))
 			uniqCharities.push(charity);
@@ -304,6 +304,13 @@ function displayAnalysis(){
 		if (!uniqTax.includes(tax))
 			uniqTax.push(tax);
 	}
+	
+	// unique months becomes the first n months of all months, where n is the latest month in uniq months
+	// ensures all months are present, up to the last month
+	
+	uniqMonths = allMonths.slice(0, 1+
+		allMonths.findIndex(
+			(x) => { return x==uniqMonths.sort()[uniqMonths.length-1];}));
 	
 	// build transformed data
 	var transData = [];
