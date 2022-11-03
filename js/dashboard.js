@@ -5,20 +5,27 @@
 */
 
 const url = "https://script.google.com/macros/s/AKfycbw9YVa58RhYN_NYEjmZe3vEZcNWYL80gRbyLqHblOHHDK0f0wEaqW9Cmcbp_YReYzi8Hw/exec"; // API endpoint
-const formElem = document.getElementById("loginForm");
+const loginForm = document.getElementById("loginForm");
+const plannerForm = document.getElementById("plannerForm");
+
 const userID = document.getElementById("userID");
 const loginBtn = document.getElementById("btn-login");
+
 var userInfo = "null";
 var gridOptions = {};
 var debugO={};
 var debugA=[];
 
-let params = new URLSearchParams(document.location.search);		// extract 'user' parameter for query string
-let userQuery = params.get("user");
-
 $(document).ready(prefillForm);
 
-formElem.addEventListener("submit", (e) => {
+function prefillForm() {
+	// attempt to prefill the form using URL query string
+	
+	// TODO: grab query string, split it, decode it, grab FormData via API, set as many fields as possible
+	
+}
+
+loginForm.addEventListener("submit", (e) => {
 
 	e.preventDefault(); // prevent default behaviour ie disable form submission
 	
@@ -32,6 +39,19 @@ formElem.addEventListener("submit", (e) => {
 
 	fetchUserInfo();
 });
+
+plannerForm.addEventListener("submit", (e) => {	
+	e.preventDefault(); // prevent default behaviour ie disable form submission
+	initSolve(plannerForm.budget.value, plannerForm.maxTrans.value);
+});
+
+var params = new URLSearchParams(document.location.search);		// extract 'user' parameter for query string
+var userQuery = params.get("user");
+
+if (userQuery) {
+	userID.value = userQuery;									// set form value, if found
+	loginBtn.click();											// click the login button
+}
 
 async function fetchUserInfo() {
 
@@ -52,9 +72,6 @@ async function fetchUserInfo() {
 	displayTracking();
 	
 	displayAnalysis();
-	
-	
-	displayPlanning();
 	
 	return;
 }
@@ -134,10 +151,10 @@ PrivateID	ABN	Date	Amount	Charity Name	Website	Size	Location	Places	Goals	Benefi
 		}
 	};
 
-   // get div to host the grid
-   const eGridDiv = document.getElementById("transactionGrid");
-   // new grid instance, passing in the hosting DIV and Grid Options
-   new agGrid.Grid(eGridDiv, gridOptions);
+	// get div to host the grid
+	const eGridDiv = document.getElementById("transactionGrid");
+	// new grid instance, passing in the hosting DIV and Grid Options
+	new agGrid.Grid(eGridDiv, gridOptions);
 
 	return;
 }
@@ -179,7 +196,11 @@ function monthFormatter(params) {
 function tagRenderer(params) {
 	
 	var html='';
-	for(var i=0; i<params.value.length-1; i++) {				// drop last item - always empty
+	
+	if (params.value.length==1 && params.value[0]=='')
+			return html;
+		
+	for(var i=0; i<params.value.length; i++) {				
 		
 		html+='<span class="btn btn-sm btn-outline-info small" title="click to filter" onclick="toggleTag(\''+params.value[i]+'\',\''+params.column.colId+'\');">' + params.value[i] + '</span>&nbsp;';
 	}
@@ -193,7 +214,7 @@ function toggleTag(tag, col) {
 	// Get a reference to the filter instance
 	const filterInstance = gridOptions.api.getFilterInstance(col); 
 
-	debugO=filterInstance;
+	//debugO=filterInstance;
 	if(!filterInstance.appliedModel || filterInstance.appliedModel=='') {
 		// if there's no filter, set the filter model to be the tag
 		filterInstance.setModel({
@@ -422,7 +443,7 @@ function displayAnalysis(){
 	}
 	
 	//debugA = seriesCumulative;
-	//debugA = transData;
+	debugA = transData;
 	
 	agCharts.AgChart.create(cumulativeChartOptions);
 	
@@ -482,7 +503,8 @@ function displayAnalysis(){
 					if (uniq[c][x])
 						uniq[c][x] += data[i]['Amount'];
 					else 
-						uniq[c][x] = data[i]['Amount']
+						if (x != '')									// exclude empty string as tag
+							uniq[c][x] = data[i]['Amount']
 				});
 		}
 		
@@ -492,11 +514,11 @@ function displayAnalysis(){
 		
 		for (var u in uniq[c])
 			if (userInfo['details'][c].includes(u.toLowerCase())) {					// user's preferred category value
-				chartData[c].push({'Category': u, 'Other': '', 'Preferred': uniq[c][u]});
+				chartData[c].push({'Category': u, 'Other': 0, 'Preferred': uniq[c][u]});
 				//chartData[c].push({'Category': u, 'AmountPref': uniq[c][u]});
 			}
 			else {
-				chartData[c].push({'Category': u, 'Other': uniq[c][u], 'Preferred': ''});
+				chartData[c].push({'Category': u, 'Other': uniq[c][u], 'Preferred': 0});
 				//chartData[c].push({'Category': u, 'AmountPref': 0});
 			}
 			
@@ -573,11 +595,17 @@ function displayAnalysis(){
 		agCharts.AgChart.create(chartOptions[c]);
 	}
 	
-	debugA = chartData;
+	//debugA = chartData;
 	
 	// Build and display Summary panel
 	
 	const elem = document.getElementById('summary');
+	var taxTotal = 0;
+	if (Object.hasOwn(transData[transData.length-1],'Not registered')) {
+		taxTotal = totalAmount - transData[transData.length-1]['Not registered']; 
+		//alert(taxTotal);
+	}
+
 	
 	const mapping = {
 		"summary-total": currencyFormatter(totalAmount,2),
@@ -585,7 +613,7 @@ function displayAnalysis(){
 		"summary-charities": uniqCharities.length,
 		"summary-monthly": currencyFormatter(totalAmount/uniqMonths.length,2),
 		"summary-amount": currencyFormatter(totalAmount/data.length,2),
-		"summary-tax": currencyFormatter(transData[transData.length-1]['Item 1'],2),
+		"summary-tax": currencyFormatter(taxTotal,2),
 		"summary-days": Math.round((uniqMonths.length*30.5)/data.length),
 		"summary-goal": chartData['Goals'][0]['Category'],
 		"summary-place": chartData['Places'][0]['Category'],
@@ -597,15 +625,6 @@ function displayAnalysis(){
 	
 	for (var i in mapping) {
 		switch(i) {
-			case 'insp-web':
-				document.getElementById(i).href='https://'+mapping[i];
-			break;
-			case 'insp-acnc':
-				document.getElementById(i).href='https://www.acnc.gov.au/charity/charities/'+mapping[i]+'/profile';
-			break;
-			case 'insp-abr':
-				document.getElementById(i).href='https://www.abr.business.gov.au/ABN/View?id='+mapping[i];
-			break;
 			default:
 				document.getElementById(i).innerHTML = mapping[i];
 		}
@@ -613,27 +632,299 @@ function displayAnalysis(){
 	
 	elem.style.display='block';
 	
+	userInfo.allocations = chartData;			// read-only
+	
 	return;
 }
 
-function displayPlanning() {
+function displayPlanner() {
 	
 	return;	
 }
 
-function prefillForm() {
-	// attempt to prefill the form using URL query string
+function initSolve(budget, maxTrans) {
+	/* function to initialise and invoke recursive solver
+	Once it has a solution, it then invokes the display function.
+	*/
 	
-	// TODO: grab query string, split it, decode it, grab FormData via API, set as many fields as possible
+	userInfo.bestSolution = 
+		{
+			"params": {
+				"budget": Number(budget)||1000,
+				"maxTrans": Number(maxTrans)||7,
+				"active": ["Goals", "Places", "Beneficiaries"],
+				"maxSolve": 1e5,
+				"searchWidth": 20
+			},
+			"eval": {
+				"baseQ": 0,						// placeholder
+				"finalQ": 0,
+				"totalValue": 0,
+				"countTrans": 0,
+				"countSolve": 0,				// use this globally
+				"minVal": 0,
+				"targLabel" : '',
+				"targCategory" : ''
+			},
+			"plan": [
+//				{"Charity Name": "Oxfam", "Amount": 300},
+//				{"Charity Name": "Red Cross", "Amount": 100},
+//				{"Charity Name": "UniMelb", "Amount": 400},
+//				{"Charity Name": "CERES", "Amount": 200},
+//				{"Charity Name": "RSPCA", "Amount": 300}
+			],
+			"allocations": {}
+		};
+
+	// create preferred list
+	var preferred=[];
 	
+	for (var c in userInfo.bestSolution.params.active) {
+		alloc = userInfo.allocations[userInfo.bestSolution.params.active[c]];
+		for (var l=0; l<alloc.length; l++) {
+			if (alloc[l]["Preferred"] != 0) {
+				preferred.push(alloc[l]["Category"]);
+			}
+		}
+	}
+	userInfo.preferred=preferred;
+	
+	
+	// Set base allocations
+
+	userInfo.bestSolution.allocations = userInfo.allocations;
+	
+	var newSolution = userInfo.bestSolution;
+	
+	var result = calculateQ(userInfo.bestSolution);
+	
+	console.log("New Q="+result.Q);
+	
+	userInfo.bestSolution.eval.baseQ = result.Q;
+	userInfo.bestSolution.eval.minVal = result.minVal;
+	userInfo.bestSolution.eval.targLabel = result.targLabel;
+	userInfo.bestSolution.eval.targCategory = result.targCategory;
+	
+	userInfo.bestSolution.eval.finalQ=1e10;
+	
+	solve(newSolution);
+	
+	console.log("InitSolve: completed search. Best solution is: ")
+	console.log(userInfo.bestSolution);
+	
+	displayPlanner();
+	
+	return;
 }
 
+function solve(solution) {
+	
+	/* function outputs a set of suggested future transactions using a dynamic programming heuristic
+	
+		Take in a solution object, returns a solution object
+	
+	Given:
+	
+		A set of historical transactions (userInfo.transactions)
+		A set of preferred labels (userInfo.details)
+		A set of optimisation constraints (budget and maxTrans and maxSolve)
+		A set of candidate charities to transact on (candidates)
+		A hierarchical objective function:
+			(1) Minimise sum value of non-preferred labels greater than smallest preferred attribute (Q)
+			(2) To split any ties, select the lowest total value of transactions (totalValue)
+			(3) To split any further ties, select solution with fewest number of charities (countTrans)
+	
+	Heuristic - branch-and-bound on depth-first-search via tail recursion:
+	
+		Test if any constraints broken; if so halt
+		
+		Test if current solution is globally best; if so, replace
 
-if (userQuery) {
-	userID.value = userQuery;									// set form value, if found
-	loginBtn.click();											// click the login button
+		Select worst preferred attribute [targLabel]
+			Identify lowest-ranked preferred attribute (within each active group)
+			Select attribute from group with greatest Q
+			
+		Compute list of non-preferred attributes greater than the smallest preferred attribute, plus a buffer
+			Buffer is the gap between smallest preferred attribute and greatest non-preferred attribute (G) (or budget, if greater)
+			
+		Select from the candidate charities all those with the target attribute
+		
+		Calculate Q if the candidate transaction took place with value of G
+		
+		Rank each candidate by Q; split ties based on totalValue
+			
+*/
+
+	
+	// test if constraints broken - if so, do not continue
+	
+	if (solution.eval.totalValue>solution.params.budget || solution.eval.countTrans>solution.params.maxTrans || userInfo.bestSolution.eval.countSolve>solution.params.maxSolve) {
+		//	console.log("Solve: totalValue= "+solution.eval.totalValue+ " countTrans="+solution.eval.countTrans+" countSolve="+userInfo.bestSolution.eval.countSolve+ " finalQ="+solution.eval.finalQ);
+		return;
+	}
+	
+	// test if new solution is better than bestSolution - if so, replace and keep on looking
+	
+	var winner=false;
+	
+	if (solution.eval.finalQ < userInfo.bestSolution.eval.finalQ)
+		winner=true;
+	
+	if (solution.eval.finalQ == userInfo.bestSolution.eval.finalQ && solution.eval.totalValue < userInfo.bestSolution.eval.totalValue)
+		winner=true;
+	
+	if (solution.eval.finalQ == userInfo.bestSolution.eval.finalQ && solution.eval.totalValue == userInfo.bestSolution.eval.totalValue && solution.eval.countTrans < userInfo.bestSolution.eval.countTrans)
+		winner=true;
+
+	if (winner) {
+		userInfo.bestSolution = solution;
+		console.log("Solve: New winner found. finalQ="+solution.eval.finalQ+" totalValue="+solution.eval.totalValue);
+	}
+
+	var minVal = solution.eval.minVal;
+	var targLabel = solution.eval.targLabel;
+	var targCategory = solution.eval.targCategory;
+	var preferred = userInfo.preferred;
+	
+	//find maximum non-preferred label in the target category (needed to calculate G)
+	
+	var maxVal=0;
+	var maxLabel="";
+	alloc = solution.allocations[targCategory];
+	for (var l=0; l<alloc.length; l++) {
+		if (alloc[l]["Other"] != 0 && alloc[l]["Other"] > maxVal) {
+				maxVal = alloc[l]["Other"];
+				maxLabel = alloc[l]["Category"];
+		}
+	}
+	
+	//console.log("Solve: maxLabel= "+maxLabel+"  maxVal= "+maxVal);
+
+	// calculate G, the amount to transact ie to lift lowest preferred to greater than highest non-preferred (in category)
+	
+	var G = Math.min(maxVal - minVal + 0.1, solution.params.budget - solution.eval.totalValue);		// upto remaining budget amount
+	
+	if (G<=0.1) { 																					// if minVal>maxVal then abandon as already optimal
+		//console.log("Solve: G="+G+" minVal="+minVal+" maxVal="+maxVal);
+		return;
+	}
+	
+	// build target candidates list
+	
+	var candidateSolutions = [];
+	var labels=[];
+	var newAlloc=[];
+	var result={};
+	
+	// filter on Top 1000 candidates that include target label
+	// add this to the plan
+	// evaluate Q
+	// add to targCandidates arrays
+	
+	for (var a=1; a<candidates.length; a++) {											// a=1 because header line
+		if (candidates[a][targCategory].includes(targLabel)) {							// only proceed with candidates that have the target label
+			var newSolution=JSON.parse(JSON.stringify(solution));						// deep-copy the original solution
+			for (var c in solution.params.active) {										// sweep through all labels and update allocations
+				labels = candidates[a][solution.params.active[c]];	
+				for (var l=0; l<labels.length; l++) {
+					if(labels[l]=='')													// skip missing labels in the category
+						break;
+					var foundLabel=false;
+					alloc=solution.allocations[solution.params.active[c]];
+					newAlloc=newSolution.allocations[solution.params.active[c]];
+					for (var n=0; n<alloc.length; n++) {								// look for label in existing allocations
+						if(alloc[n]["Category"]==labels[l]) {
+							foundLabel=true;
+							if (preferred.includes(labels[l]))
+								newAlloc[n]["Preferred"]+=G;
+							else
+								newAlloc[n]["Other"]+=G;
+						}
+					}
+					if (!foundLabel) {																 			// if not already present, add it
+						if (preferred.includes(labels[l]))
+								newAlloc.push({"Category":labels[l],"Other":0,"Preferred":G});
+							else
+								newAlloc.push({"Category":labels[l],"Other":G,"Preferred":0});
+					}
+				}
+			}
+			
+			result = calculateQ(newSolution);
+			newSolution.plan.push({"Charity Name": candidates[a]["Charity Name"], "Amount": G});
+			newSolution.eval.totalValue += G;
+			newSolution.eval.countTrans += 1;
+			userInfo.bestSolution.eval.countSolve += 1;
+			newSolution.eval.finalQ = result.Q;
+			newSolution.eval.minVal = result.minVal;
+			newSolution.eval.targLabel = result.targLabel;
+			newSolution.eval.targCategory = result.targCategory;
+			
+			candidateSolutions.push(newSolution);
+		}
+	}
+	// sort each targeted candidate by Q value, lowest to highest; if equal Q, sort by totalValue lowest to highest
+	
+	candidateSolutions.sort( (a,b)=>{if (a.eval.finalQ===b.eval.finalQ) return (a.eval.totalValue - b.eval.totalValue); return (a.eval.finalQ - b.eval.finalQ);})
+	
+	// Iterate over each target candidate and invoke solve again on the top N candidates
+	
+	for(var s=0; s<Math.min(candidateSolutions.length,solution.params.searchWidth); s++) {
+		solve(candidateSolutions[s]);
+	}
+	
+	return;
 }
 
+function calculateQ(solution) {
+
+	// given a solution object, calculates the Q score
+	// this is the sum of non-preferred labels greater than the least-valued preferred label in each category
+
+	// Select lowest-value preferred label across all categories
+	// (and build preferred list along the way)
+	
+	var minVal=[];
+	var targLabel=[];
+	var targCategory='';
+	var alloc=[];
+	var preferred=[];
+	
+	for (var c in solution.params.active) {
+		alloc = solution.allocations[solution.params.active[c]];
+		for (var l=0; l<alloc.length; l++) {
+			if (alloc[l]["Preferred"] != 0) {
+				//preferred.push(alloc[l]["Category"]);
+				if (!minVal[c] || alloc[l]["Preferred"] < minVal[c]) {
+					minVal[c] = alloc[l]["Preferred"];
+					targLabel[c] = alloc[l]["Category"];
+				}
+			}
+		}
+	}
+	
+	// sweep through allocations and accumulate into Q
+	
+	var Q=0;
+	
+	var globalMin=1e10;
+	var targ=0;
+	
+	for (var c in solution.params.active) {
+		if (minVal[c]<globalMin) {
+			globalMin = minVal[c];
+			targ = c;
+		}
+		alloc = solution.allocations[solution.params.active[c]];
+		for (var l=0; l<alloc.length; l++) {
+			if (alloc[l]["Other"] != 0 && alloc[l]["Other"] > minVal[c]) {
+					Q += alloc[l]["Other"];
+			}
+		}
+	}
+	
+	return {"Q": Q, "minVal": minVal[targ], "targLabel": targLabel[targ], "targCategory": solution.params.active[targ]};
+}
 
 
 // copy of reference data
