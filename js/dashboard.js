@@ -4,9 +4,9 @@
 **
 */
 
-const url = "https://script.google.com/macros/s/AKfycbw9YVa58RhYN_NYEjmZe3vEZcNWYL80gRbyLqHblOHHDK0f0wEaqW9Cmcbp_YReYzi8Hw/exec"; // API endpoint
+const url = "https://script.google.com/macros/s/AKfycbzF0quGy9vjwywjCZx1-vOE0FuYEzJBhavkg1mfN91CHkD35Z0_Lytlxz6acq3y2GiMkw/exec"; // API endpoint
 const loginForm = document.getElementById("loginForm");
-const plannerForm = document.getElementById("plannerForm");
+const optimiseForm = document.getElementById("optimiseForm");
 
 const userID = document.getElementById("userID");
 const loginBtn = document.getElementById("btn-login");
@@ -40,9 +40,14 @@ loginForm.addEventListener("submit", (e) => {
 	fetchUserInfo();
 });
 
-plannerForm.addEventListener("submit", (e) => {	
+discoverForm.addEventListener("submit", (e) => {	
 	e.preventDefault(); // prevent default behaviour ie disable form submission
-	initSolve(plannerForm.budget.value, plannerForm.maxTrans.value);
+	initDiscover(discoverForm.maxDiscover.value);
+});
+
+optimiseForm.addEventListener("submit", (e) => {	
+	e.preventDefault(); // prevent default behaviour ie disable form submission
+	initOptimise(optimiseForm.budget.value, optimiseForm.maxTrans.value);
 });
 
 var params = new URLSearchParams(document.location.search);		// extract 'user' parameter for query string
@@ -615,9 +620,9 @@ function displayAnalysis(){
 		"summary-amount": currencyFormatter(totalAmount/data.length,2),
 		"summary-tax": currencyFormatter(taxTotal,2),
 		"summary-days": Math.round((uniqMonths.length*30.5)/data.length),
-		"summary-goal": chartData['Goals'][0]['Category'],
-		"summary-place": chartData['Places'][0]['Category'],
-		"summary-beneficiary": chartData['Beneficiaries'][0]['Category'],
+		"summary-goal": chartData['Goals'].length>0?chartData['Goals'][0]['Category']:0,
+		"summary-place": chartData['Places'].length>0?chartData['Places'][0]['Category']:0,
+		"summary-beneficiary": chartData['Beneficiaries'].length>0?chartData['Beneficiaries'][0]['Category']:0,
 		};
 	
 	//var a=0; var t=transData[transData.length-1]; alert(uniqTax+' ---'+ uniqTax.length);
@@ -642,7 +647,233 @@ function displayPlanner() {
 	return;	
 }
 
-function initSolve(budget, maxTrans) {
+
+function initDiscover(maxSuggestions) {
+	/* function to initialise and invoke recursive solver
+	Once it has a suggestion set, it then invokes the display function.
+	*/
+	
+	userInfo.bestSuggestions = 
+		{
+			"params": {
+				"maxSuggestions": Number(maxDiscover)||10,
+				"active": ["Goals", "Places", "Beneficiaries"],
+				"maxSolve": 1e5,
+				"searchWidth": 20
+			},
+			"eval": {
+				"baseE": 0,						// placeholder
+				"finalE": 0,
+				"countSuggestions": 0,
+				"countSolve": 0,				// use this globally
+				"totalValue": 0
+			},
+			"plan": [
+//				{"Charity Name": "Oxfam", "Amount": 300},
+//				{"Charity Name": "Red Cross", "Amount": 100},
+//				{"Charity Name": "UniMelb", "Amount": 400},
+//				{"Charity Name": "CERES", "Amount": 200},
+//				{"Charity Name": "RSPCA", "Amount": 300}
+			],
+			"allocations": {}
+		};
+
+	// create novel list ie candidate charities except those already donated to
+	var novels=[];
+	var match;
+	var E=0;
+	
+	for (var a=1; a<candidates.length; a++) {
+		match=false;
+		for (var t=1; t<userInfo.transactions && !match; t++) {			// t=1 to skip header row
+			if (userInfo[t]['ABN']==candidates[a]['ABN'])
+				match=true;
+		}
+		if (!match)
+			novels.push(candidates[a]);
+	}
+		
+	userInfo.novels=novels;
+	
+	// Set base allocations
+
+	userInfo.bestSuggestions.allocations = userInfo.allocations;
+	
+	var newSuggestions = userInfo.bestSuggestions;
+	
+	// calculate base Error; square of the sum of the allocations
+	
+	var labels;
+	for (var c in newSuggestions.params.active) {												// sweep through all labels
+		labels = newSuggestions.allocations[newSuggestions.params.active[c]];	
+		for (var l=0; l<labels.length; l++) {
+			if (labels[l]=='')																	// skip missing labels in the category
+				break;
+			for (var i=0; i<newSuggestions.allocations[newSuggestions.params.active[c]].length; i++) {
+				E += newSuggestions.allocations[userInfo.bestSuggestions.params.active[c]][i]["Preferred"]*newSuggestions.allocations[userInfo.bestSuggestions.params.active[c]][i]["Preferred"]+newSuggestions.allocations[userInfo.bestSuggestions.params.active[c]][i]["Other"]*newSuggestions.allocations[userInfo.bestSuggestions.params.active[c]][i]["Other"];
+			}
+		}
+	}
+	
+	console.log("initDiscover: Base E="+E);
+	
+	userInfo.bestSuggestions.eval.baseE = E;
+	
+	userInfo.bestSuggestions.eval.finalE=1e10;
+	
+	discover(newSuggestions);
+	
+	console.log("initDiscover: completed search. Best suggestions are: ")
+	console.log(userInfo.bestSuggestions);
+	
+	displayPlanner();
+	
+	return;
+}
+
+function discover(suggestions) {
+	
+	/* function outputs a set of suggested future transactions using a dynamic programming heuristic
+		This set of transactions is chosen to mimic closely the historical transactions, in terms of dollar allocations to the tags.
+		It does this by minimising the square of the tag-wise error between actual and suggested.
+	
+		Take in a suggestions object, returns a suggestions object
+	
+	Given:
+	
+		A set of historical transactions (userInfo.transactions)
+		A set of optimisation constraints (maxDiscover and maxSolve)
+		A set of candidate novel charities to transact on (novels)
+		An objective function (minimise the square of the error term)
+			Error (E) - sum over all tags of the square of the difference between the suggested transactions' allocation and the historical ones
+	
+	Heuristic - branch-and-bound on depth-first-search via tail recursion:
+	
+		Test if any constraints broken; if so halt
+		
+		Test if current suggestions are globally best; if so, replace
+
+		Iterate over each possible novel transaction
+		
+			Iterate over each label in the active categories
+			
+				Count and sum allocations in the matching label
+				
+			Calculate the transaction value as the mean value of the match-set
+			
+			Create new allocations
+				If in the match-set, old allocation minus the transaction value; otherwise just the old allocation
+				
+			Calculate the Error of the new allocations
+			
+		Rank the novels by Error (low to high) and then by popularity (high to low)
+		
+		Call "discover" recursively on the best maxBreadth suggestions
+			
+*/
+
+	// Test if any constraints have been broken
+	
+	if (suggestions.eval.countSuggestions > suggestions.params.maxSuggestions || 
+		userInfo.bestSuggestions.eval.countSolve > userInfo.bestSuggestions.params.maxSolve) {
+		return;
+	}
+	
+	// Test if current suggestions are globally best; if so, replace
+	
+	if (suggestions.eval.finalE < userInfo.bestSuggestions.eval.finalE) {
+		userInfo.bestSuggestions = suggestions;
+		console.log("Discover: New winner found. finalE="+suggestions.eval.finalE+" totalValue="+suggestions.eval.totalValue+" countSolve="+userInfo.bestSuggestions.eval.countSolve);
+	}
+	
+	// Iterate over each novel transaction
+	
+	var matchCount=0;
+	var matchSum=0;
+	var mean=0;
+	var E=0;
+	var newSuggestions={};
+	var candidateSuggestions=[];
+	
+	for (var n=0; n<userInfo.novels.length; n++) {
+		for (var c in suggestions.params.active) {											// sweep through all labels
+			labels = userInfo.novels[n][suggestions.params.active[c]];	
+			for (var l=0; l<labels.length; l++) {
+				if (labels[l]=='')															// skip missing labels in the category
+					break;
+				for (var i=0; i<suggestions.allocations[suggestions.params.active[c]].length; i++) {
+					if (suggestions.allocations[suggestions.params.active[c]][i]['Category'] == labels[l]) {			// test for a match
+						matchCount++;
+						matchSum+=suggestions.allocations[suggestions.params.active[c]][i]["Preferred"] + suggestions.allocations[suggestions.params.active[c]][i]["Other"];
+					}
+				}
+			}
+		}
+		
+		// if no matches, then break out of the loop and retry;
+		
+		if (matchCount==0 || matchSum<1) {
+			continue;
+		}
+		
+		mean=matchSum/matchCount;															// calculate optimal transaction value
+		newSuggestions=JSON.parse(JSON.stringify(suggestions));								// deep-copy the original suggestions
+		//update allocations
+		for (var c in suggestions.params.active) {											// sweep through all labels
+			labels = userInfo.novels[n][suggestions.params.active[c]];
+			for (var l=0; l<labels.length; l++) {
+				if (labels[l]=='')															// skip missing labels in the category
+					break;
+				for (var i=0; i<suggestions.allocations[suggestions.params.active[c]].length; i++) {
+					if (suggestions.allocations[suggestions.params.active[c]][i]['Category'] == labels[l]) {			// test for a match and substract mean
+						if (suggestions.allocations[suggestions.params.active[c]][i]["Preferred"]>0)					// use Preferred value or Other
+							newSuggestions.allocations[suggestions.params.active[c]][i]["Preferred"]-=mean;
+						else
+							newSuggestions.allocations[suggestions.params.active[c]][i]["Other"]-=mean;
+					}
+					
+					// Error is incremented by the square of allocation value (Preferred or Other)
+				
+					E += newSuggestions.allocations[suggestions.params.active[c]][i]["Preferred"]*newSuggestions.allocations[suggestions.params.active[c]][i]["Preferred"]+newSuggestions.allocations[suggestions.params.active[c]][i]["Other"]*newSuggestions.allocations[suggestions.params.active[c]][i]["Other"];
+					
+				/*	// if allocation is now zero, then remove it
+					
+					if (newSuggestions.allocations[suggestions.params.active[c]][i]["Preferred"]==0 && newSuggestions.allocations[suggestions.params.active[c]][i]["Other"]==0)
+						newSuggestions.allocations[suggestions.params.active[c]][i]['Category']='';
+				*/
+				}
+			}
+		}
+
+		newSuggestions.eval.finalE = E;
+		newSuggestions.plan.push({"Charity Name": userInfo.novels[n]["Charity Name"], "Amount": mean});
+		newSuggestions.eval.countSuggestions+=1;
+		userInfo.bestSuggestions.eval.countSolve+=1;														// global variable
+		newSuggestions.eval.totalValue+=mean;
+		candidateSuggestions.push(newSuggestions);
+		
+		// reset accumulators
+		var matchCount=0;
+		var matchSum=0;
+		var E=0;
+	}
+	
+	// rank candidate suggestions by error (low to high)
+	
+	candidateSuggestions.sort( (a,b)=>{return (a.eval.finalE - b.eval.finalE);}) 					// TODO: split ties on popularity
+	
+	//console.log('discover: candidateSuggestions.length= '+candidateSuggestions.length);
+	
+	// Iterate over each candidate and invoke discover again on the top N candidates
+	
+	for(var s=0; s<Math.min(candidateSuggestions.length,suggestions.params.searchWidth); s++) {
+		discover(candidateSuggestions[s]);
+	}
+	
+	return;
+}
+
+function initOptimise(budget, maxTrans) {
 	/* function to initialise and invoke recursive solver
 	Once it has a solution, it then invokes the display function.
 	*/
@@ -707,9 +938,9 @@ function initSolve(budget, maxTrans) {
 	
 	userInfo.bestSolution.eval.finalQ=1e10;
 	
-	solve(newSolution);
+	optimise(newSolution);
 	
-	console.log("InitSolve: completed search. Best solution is: ")
+	console.log("initOptimise: completed search. Best solution is: ")
 	console.log(userInfo.bestSolution);
 	
 	displayPlanner();
@@ -717,7 +948,7 @@ function initSolve(budget, maxTrans) {
 	return;
 }
 
-function solve(solution) {
+function optimise(solution) {
 	
 	/* function outputs a set of suggested future transactions using a dynamic programming heuristic
 	
@@ -778,7 +1009,7 @@ function solve(solution) {
 
 	if (winner) {
 		userInfo.bestSolution = solution;
-		console.log("Solve: New winner found. finalQ="+solution.eval.finalQ+" totalValue="+solution.eval.totalValue);
+		console.log("Optimise: New winner found. finalQ="+solution.eval.finalQ+" totalValue="+solution.eval.totalValue);
 	}
 
 	var minVal = solution.eval.minVal;
@@ -870,7 +1101,7 @@ function solve(solution) {
 	// Iterate over each target candidate and invoke solve again on the top N candidates
 	
 	for(var s=0; s<Math.min(candidateSolutions.length,solution.params.searchWidth); s++) {
-		solve(candidateSolutions[s]);
+		optimise(candidateSolutions[s]);
 	}
 	
 	return;

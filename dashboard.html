@@ -247,8 +247,24 @@
                 </div>
                 <!-- Planning Section Content-->
                 <div class="row justify-content-center">
-				<!-- Planner form -->
-					<form id="plannerForm" action="">
+
+				<!-- Discover form -->
+					<form id="discoverForm" action="">
+						<div class="form-group row" style="margin-left: -1rem;">
+							<div class="col-10">								
+								<input id="maxDiscover" name="maxDiscover" placeholder="10" type="number" aria-describedby="maxDiscoverHelpBlock" class="form-control"  style="border-color: #9cc3d5;">
+								<span id="maxDiscoverHelpBlock" class="form-text text-muted">Enter the maximum number of causes (optional)</span>
+							</div>
+							<div class="col-2">
+									<button name="discover" type="submit" class="btn btn-secondary" id="btn-discover">Discover</button>
+							</div>
+						</div>
+					</form>
+				</div>
+				
+				<!-- Optimse form -->
+                <div class="row justify-content-center">					
+					<form id="optimiseForm" action="">
 						<div class="form-group row" style="margin-left: -1rem;">
 							<div class="col-10">	
 								<input id="budget" name="budget" placeholder="5000" type="number" aria-describedby="budgetHelpBlock" class="form-control"  style="border-color: #9cc3d5;">
@@ -258,11 +274,12 @@
 								<span id="maxTransHelpBlock" class="form-text text-muted">Enter the maximum number of causes (optional)</span>
 							</div>
 							<div class="col-2">
-									<button name="solve" type="submit" class="btn btn-secondary" id="btn-solve">Plan</button>
+									<button name="optimise" type="submit" class="btn btn-secondary" id="btn-optimise">Optimise</button>
 							</div>
 						</div>
 					</form>                   
                 </div>
+								
             </div>
 		</section>
 	
