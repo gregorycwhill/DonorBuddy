@@ -105,7 +105,7 @@ function displayTransactions(mode){
 
 		case "Optimise":
 			var gridDiv = "PlanGrid";
-			var data = userInfo.bestSolutions.transactions.slice(1);						// replace with bestSolution
+			var data = userInfo.bestSolution.transactions.slice(1);						// replace with bestSolution
 		break;		
 	}
 	// build headers
@@ -281,7 +281,7 @@ function inspectCharity(id,mode) {
 
 			case "Optimise":
 				var inspectDiv = "PlanInspect";
-				var trans = userInfo.bestSolutions.transactions;					
+				var trans = userInfo.bestSolution.transactions;					
 				var label="Plan";
 			break;		
 	}
@@ -486,6 +486,9 @@ function displayAnalysis(){
 			  },
 			},
 		  ],
+		legend: {
+			position: 'bottom'
+		},
 		data: transData,
 		series: seriesCumulative
 	}
@@ -541,6 +544,7 @@ function displayAnalysis(){
 	var uniq = {'Goals': {}, 'Places': {}, 'Beneficiaries': {} };
 	var chartData = {};
 	var chartOptions = {};
+	userInfo.breakdownChart = {};
 	
 	for (var c in uniq) {												// iterate through each category dimension (goals, place, beneficiaries)
 
@@ -641,8 +645,11 @@ function displayAnalysis(){
 		}
 		
 		agCharts.AgChart.create(chartOptions[c]);
+		
 	}
 	
+	userInfo.breakdownChart = chartOptions;
+	console.log(userInfo.breakdownChart);
 	//debugA = chartData;
 	
 	// Build and display Summary panel
@@ -703,14 +710,18 @@ function displayPlanner(mode) {
 			case "Discover":
 				var plan  = userInfo.bestSuggestions.plan;
 				userInfo.bestSuggestions.transactions = trans;
+				var categories = userInfo.bestSuggestions.params.active;
+				var data = userInfo.bestSuggestions.allocations;
 			break;
 
 			case "Optimise":
 				var plan = userInfo.bestSolution.plan;
-				userInfo.bestSolutions.transactions = trans;
+				userInfo.bestSolution.transactions = trans;
+				var categories = userInfo.bestSolution.params.active;
+				var data = userInfo.bestSolution.allocations;
 			break;		
 	}
-	
+	// convert plan to transaction (ie adding reference data) via candidate dataset
 	trans.push(userInfo.transactions[0]);		// add header row
 	for(var t=1; t<candidates.length; t++) {
 		for(var p=0; p<plan.length; p++) {
@@ -722,6 +733,37 @@ function displayPlanner(mode) {
 	}
 	
 	displayTransactions(mode);
+	
+	// Add charts of plan breakdown
+	
+	if(mode=="Discover") {
+		allocationChart=[];
+		var val=-1;
+		
+		for (var c in categories) {
+			// convert plan allocation to allocation chart view
+			allocationChart[categories[c]] = userInfo.breakdownChart[categories[c]].data;			// copy historical data structure
+			for (var a in allocationChart[categories[c]]) {
+				val = data[categories[c]][allocationChart[categories[c]][a]['Category']];	
+				if(allocationChart[categories[c]][a]['Preferred']>0) {
+					allocationChart[categories[c]][a]['Preferred'] = val;		// overwrite preferred value
+				} else {
+					allocationChart[categories[c]][a]['Other'] = val;		// overwrite preferred value
+				}
+			}
+		
+			userInfo.breakdownChart[categories[c]].container=document.getElementById('breakdownPlan'+categories[c]);
+			userInfo.breakdownChart[categories[c]].data=allocationChart[categories[c]];
+			agCharts.AgChart.create(userInfo.breakdownChart[categories[c]]);
+		}
+	}
+	else {
+		for (var c in categories) {
+			userInfo.breakdownChart[categories[c]].container=document.getElementById('breakdownPlan'+categories[c]);
+			userInfo.breakdownChart[categories[c]].data=data[categories[c]];
+			agCharts.AgChart.create(userInfo.breakdownChart[categories[c]]);	
+		}	
+	}
 	
 	return;	
 }
@@ -771,6 +813,7 @@ function initDiscover(maxSuggestions) {
 		if (!match)
 			novels.push(candidates[a]);
 	}
+	//userInfo.novels=novels=candidates.slice(1);
 	userInfo.novels=novels;
 	
 	// Set base allocations  (and calculate baseline Error along the way as square of the sum of the allocations)
@@ -806,70 +849,8 @@ function initDiscover(maxSuggestions) {
 	
 	console.log("initDiscover: completed search. Similarity score is: "+score+"  Best suggestions are: ")
 	console.log(userInfo.bestSuggestions);
-
-	// Display both Base and Best values
-	for (var c in userInfo.bestSuggestions.params.active) {												// sweep through all categories
-		category = userInfo.bestSuggestions.params.active[c];
-		labels = userInfo.bestSuggestions.allocations[category];											// pick up all labels in final allocations
-		for(var l in labels) {
-			val=-1;
-			for (var b in userInfo.allocations[category]) {
-				if (userInfo.allocations[category][b]['Category']==labels[l])
-					val = userInfo.allocations[category][b]['Category']['Preferred'] + userInfo.allocations[category][b]['Category']['Other']; 
-			}
-			//console.log("initDiscover: category= " +category+" label= "+l+" Base= "+val+ " Best= "+labels[l]);
-		}
-	}
 	
-
 	displayPlanner("Discover");
-	/*	
-	// first, read in the base value
-	
-	allLabels={};
-	
-	var val=0;
-	var obj={};
-
-	for (var c in newSuggestions.params.active) {												// sweep through all categories in Base Allocations
-		category = newSuggestions.params.active[c];
-		labels = userInfo.allocations[category];
-		obj={};
-		for (var l=0; l<labels.length; l++) {
-			if (labels[l]=='')																	// skip missing labels in the category
-				break;
-			//allLabels[category][labels[l]['Category']]['Base']= labels[l]['Preferred']+labels[l]['Other']
-			val = labels[l]['Preferred']+labels[l]['Other'];
-			obj[labels[l]['Category']]={'Base': val};
-		}
-		allLabels[category]=JSON.parse(JSON.stringify(obj));
-	}
-	
-	// next, read in the best value
-	for (var c in newSuggestions.params.active) {												// sweep through all categories in bestSuggestions Allocations
-		category = newSuggestions.params.active[c];
-		labels = userInfo.bestSuggestions.allocations[category];	
-		obj={};
-		for (var l=0; l<labels.length; l++) {
-			if (labels[l]=='')																	// skip missing labels in the category
-				break;
-			//allLabels[category][labels[l]['Category']]['Best']= labels[l]['Preferred']+labels[l]['Other']
-			val = labels[l]['Preferred']+labels[l]['Other'];
-			//obj[labels[l]['Category']]={'Best': val};
-			allLabels[category][labels[l]['Category']]={'Best': val, 'Base': allLabels[category][labels[l]['Category']]['Base']}
-		}
-		//allLabels[category]=JSON.parse(JSON.stringify(obj));
-	}
-	
-	
-	// Display both Base and Best values
-	for (var c in allLabels) {												// sweep through all categories
-		for(var l in allLabels[c]) {
-			console.log("initDiscover: category= " +c+" label= "+l+" Base= "+allLabels[c][l]['Base']+ " Best= "+allLabels[c][l]['Best']);
-		}
-	}
-	
-	*/
 	
 	return;
 }

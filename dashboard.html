@@ -6,6 +6,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
         <title>DonorBuddy - Give Your Best</title>
+		<link rel="icon" type="image/x-icon" href="assets/img/favicon.ico">
 
         <!-- Font Awesome icons (free version)-->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" crossorigin="anonymous"></script>
@@ -19,7 +20,7 @@
     </head>
     <body id="page-top">
         <nav class="navbar navbar-expand-lg bg-secondary fixed-top" id="mainNav">
-            <div class="container"><a class="navbar-brand js-scroll-trigger" href="index.html#page-top">DonorBuddy</a>
+            <div class="container"><a class="navbar-brand js-scroll-trigger" href="index.html#page-top"><img src="assets/img/logo-lg.png" style="width:70px;height:60px; margin:10px;">DonorBuddy</a>
                 <button class="navbar-toggler navbar-toggler-right font-weight-bold bg-primary text-white rounded" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">Menu <i class="fas fa-bars"></i></button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ml-auto
@@ -328,7 +329,37 @@
 						</table>
 						<p><span>You gave them </span><span id="PlanInsp-total">x</span><span> from </span><span id="PlanInsp-count">y</span><span> gifts.</span></p>					
 					</div>
-				</div>				
+				</div>
+				<!-- Breakdown by Categories -->
+				<ul class="nav nav-pills justify-content-center mb-3" id="tabs-planTab" role="tablist" style="padding-top: 2rem;">
+					<li class="nav-item" style="padding: 0rem 2rem;">
+						<a class="nav-link active" id="tabs-planGoals-tab" data-toggle="tab" href="#tabs-planGoals" role="tab" aria-controls="tabs-Plangoals" aria-selected="true">Goals</a>
+					</li>
+					<li class="nav-item" style="padding: 0rem 2rem;">
+						<a class="nav-link" id="tabs-planPlaces-tab" data-toggle="tab" href="#tabs-planPlaces" role="tab" aria-controls="tabs-planPlaces" aria-selected="false">Places</a>
+					</li>					
+					<li class="nav-item" style="padding: 0rem 2rem;">
+						<a class="nav-link" id="tabs-planBeneficiaries-tab" data-toggle="tab" href="#tabs-planBeneficiaries" role="tab" aria-controls="tabs-planBeneficiaries" aria-selected="false">Beneficiaries</a>
+					</li>									
+				</ul>
+				<div class="tab-content" id="tabs-tabPlanContent">
+					<div class="tab-pane fade show active" id="tabs-planGoals" role="tabpanel" aria-labelledby="tabs-planGoals-tab">
+						<div class="row justify-content-center">
+							<div class="col-12" id="breakdownPlanGoals" style="height: 400px;"></div>
+						</div>
+					</div>
+					<div class="tab-pane fade show" id="tabs-planPlaces" role="tabpanel" aria-labelledby="tabs-planPlaces-tab">
+						<div class="row justify-content-center">
+							<div class="col-12" id="breakdownPlanPlaces" style="height: 400px;"></div>
+						</div>
+					</div>
+					<div class="tab-pane fade show" id="tabs-planBeneficiaries" role="tabpanel" aria-labelledby="tabs-planBeneficiaries-tab">
+						<div class="row justify-content-center">
+							<div class="col-12" id="breakdownPlanBeneficiaries" style="height: 400px;"></div>
+						</div>
+					</div>
+				</div>
+				
             </div>
 		</section>
 	
