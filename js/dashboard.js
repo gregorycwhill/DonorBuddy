@@ -650,6 +650,7 @@ function displayAnalysis(){
 	
 	userInfo.breakdownChart = chartOptions;
 	console.log(userInfo.breakdownChart);
+	console.log(transData);
 	//debugA = chartData;
 	
 	// Build and display Summary panel
