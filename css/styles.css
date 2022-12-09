@@ -3863,6 +3863,8 @@ input[type=button].btn-block {
 }
 .nav-link:hover, .nav-link:focus {
   text-decoration: none;
+  background-color: #e9ecef;
+  border-radius: 0.5rem;
 }
 .nav-link.disabled {
   color: #6c757d;
@@ -3872,18 +3874,13 @@ input[type=button].btn-block {
 
 .nav-tabs {
   /*border-bottom: 0.125rem solid #dee2e6; */
-  margin-bottom: -5rem;
+
 }
 .nav-tabs .nav-item {
-  margin-left: -0.0625rem;
-  margin-right: -0.0625rem;
+
 }
 .nav-tabs .nav-link {
-  border: 0.125rem solid transparent;
-  border-top-left-radius: 0.5rem;
-  border-top-right-radius: 0.5rem;
-  border-bottom: 0.125rem solid #9cc3d5; /*#dee2e6;*/
-  color: #bbb;
+
 }
 .nav-tabs .nav-link:hover, .nav-tabs .nav-link:focus {
   border-color: #e9ecef #e9ecef #dee2e6;
@@ -3895,15 +3892,16 @@ input[type=button].btn-block {
 }
 .nav-tabs .nav-link.active,
 .nav-tabs .nav-item.show .nav-link {
-  color: #9cc3d5; /*#495057;*/
-  background-color: #fff;
+  color: #fff; /*#495057;*/
+  background-color: #9cc3d5; /*#fff;*/
   /*border-color: #dee2e6 #dee2e6 #fff;*/
   border-color: #9cc3d5;
-  border-bottom: 0.125rem solid white;
-  margin-left: 0.07rem;
+  border-radius: 0.5rem;
+
+
 }
 .nav-tabs .dropdown-menu {
-  margin-top: -0.125rem;
+
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
@@ -3942,10 +3940,8 @@ input[type=button].btn-block {
 }
 .tab-content > .active {
   display: block;
-  border-left: 0.1rem solid #9cc3d5;
-  border-right: 0.1rem solid #9cc3d5;
   padding: 0.5rem;
-  margin-top:-1rem;
+  margin-top:1rem;
 }
 
 .navbar {

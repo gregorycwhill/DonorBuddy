@@ -266,263 +266,363 @@
 									</div>
 								</div>							
 							  
-								<ul class="nav nav-tabs nav-fill mb-3" id="tabs-tab" role="tablist">
-									<li class="nav-item">
+								<div style="display: flex">
+									<div class="nav flex-column nav-tabs col-2" id="tabs-tab" role="tablist" aria-orientation="vertical">
 										<a class="nav-link active" id="tabs-profile-tab" data-toggle="tab" href="#tabs-profile" role="tab" aria-controls="tabs-profile" aria-selected="true">Profile</a>
-									</li>
-									<li>
+
 										<a class="nav-link" id="tabs-notifications-tab" data-toggle="tab" href="#tabs-notifications" role="tab" aria-controls="tabs-notifications" aria-selected="false">Notifications</a>
-									</li>	
-									<li class="nav-item">
+	
+
+										<a class="nav-link" id="tabs-organisation-tab" data-toggle="tab" href="#tabs-organisation" role="tab" aria-controls="tabs-organisation" aria-selected="false">Organisation</a>
+
 										<a class="nav-link" id="tabs-places-tab" data-toggle="tab" href="#tabs-places" role="tab" aria-controls="tabs-places" aria-selected="false">Places</a>
-									</li>
-									<li class="nav-item">
+
 										<a class="nav-link" id="tabs-goals-tab" data-toggle="tab" href="#tabs-goals" role="tab" aria-controls="tabs-goals" aria-selected="false">Goals</a>
-									</li>
-									<li>
+
 										<a class="nav-link" id="tabs-beneficiaries-tab" data-toggle="tab" href="#tabs-beneficiaries" role="tab" aria-controls="tabs-beneficiaries" aria-selected="false">Beneficiaries</a>
-									</li>									
-								</ul>
-								<div class="tab-content" id="tabs-tabContent">
-									<div class="tab-pane fade show active" id="tabs-profile" role="tabpanel" aria-labelledby="tabs-profile-tab">
-										<div class="form-group row">
-											<label class="col-2 col-form-label" for="name">Name</label>
+
+										<a class="nav-link" id="tabs-keywords-tab" data-toggle="tab" href="#tabs-keywords" role="tab" aria-controls="tabs-keywords" aria-selected="false">Keywords</a>
+									
+									</div>
+									<div class="tab-content col-10" id="tabs-tabContent">
+										<div class="tab-pane fade show active" id="tabs-profile" role="tabpanel" aria-labelledby="tabs-profile-tab">
+											<div class="form-group row">
+												<label class="col-2 col-form-label" for="name">Name</label>
+													<div class="col-10">
+														<div class="input-group">
+															<div class="input-group-prepend">
+																<div class="input-group-text">
+																	<i class="fa fa-user-circle"></i>
+																</div>
+															</div> 
+															<input id="name" name="name" placeholder="" type="text" aria-describedby="nameHelpBlock" class="form-control">
+														</div> 
+														<span id="nameHelpBlock" class="form-text text-muted">Nickname (optional)</span>
+													</div>
+											</div>
+											<div class="form-group row">
+												<label class="col-2 col-form-label" for="amount">Target Amount</label>
 												<div class="col-10">
 													<div class="input-group">
 														<div class="input-group-prepend">
-															<div class="input-group-text">
-																<i class="fa fa-user-circle"></i>
-															</div>
+															<div class="input-group-text">$</div>
 														</div> 
-														<input id="name" name="name" placeholder="" type="text" aria-describedby="nameHelpBlock" class="form-control">
-													</div> 
-													<span id="nameHelpBlock" class="form-text text-muted">Nickname (optional)</span>
-												</div>
+														<input id="amount" name="amount" placeholder="1000" type="number" aria-describedby="amountHelpBlock" class="form-control"> 
+														<div class="input-group-append">
+															<div class="input-group-text">.00</div>
+														</div>
+													</div>	
+													<span id="amountHelpBlock" class="form-text text-muted">Enter your target annual gift amount (optional)</span>
+												</div>											
+											</div>
 										</div>
-										<div class="form-group row">
-											<label class="col-2 col-form-label" for="amount">Target Amount</label>
-											<div class="col-10">
+										<div class="tab-pane fade" id="tabs-notifications" role="tabpanel" aria-labelledby="tabs-notifications-tab">
+											<div class="form-group row">
+												<div class="col-12">
+													<div class="custom-controls-stacked">
+														<div class="custom-control custom-checkbox">
+															<input name="notifications" id="Notification_0" type="checkbox" aria-describedby="NotificationHelpBlock" class="custom-control-input" value="submit" checked="checked" disabled="disabled"> 
+															<label for="Notification_0" class="custom-control-label">Whenever I submit a receipt</label>
+														</div>
+													</div>
+													<div class="custom-controls-stacked">
+														<div class="custom-control custom-checkbox">
+															<input name="notifications" id="Notification_1" type="checkbox" aria-describedby="NotificationHelpBlock" class="custom-control-input" value="monthly"> 
+															<label for="Notification_1" class="custom-control-label">Monthly summary</label>
+														</div>
+													</div>
+													<div class="custom-controls-stacked">
+														<div class="custom-control custom-checkbox">
+															<input name="notifications" id="Notification_2" type="checkbox" aria-describedby="NotificationHelpBlock" class="custom-control-input" value="eofy"> 
+															<label for="Notification_2" class="custom-control-label">End of Financial Year summary</label>
+														</div>
+													</div>
+													<div class="custom-controls-stacked">
+														<div class="custom-control custom-checkbox">
+															<input name="notifications" id="Notification_3" type="checkbox" aria-describedby="NotificationHelpBlock" class="custom-control-input" value="target" checked="checked"> 
+															<label for="Notification_3" class="custom-control-label">When I achieve my target</label>
+														</div>
+													</div>
+													<div class="custom-controls-stacked">
+														<div class="custom-control custom-checkbox">
+															<input name="notifications" id="Notification_4" type="checkbox" aria-describedby="NotificationHelpBlock" class="custom-control-input" value="match" checked="checked"> 
+															<label for="Notification_4" class="custom-control-label">When there are relevant matching offers</label>
+														</div>
+													</div> 
+													<span id="NotificationHelpBlock" class="form-text text-muted">Select when you would like to be notified</span>
+												</div>
+											</div> 
+										</div>
+										<div class="tab-pane fade" id="tabs-organisation" role="tabpanel" aria-labelledby="tabs-organisation-tab">
+											<div class="form-group">
 												<div class="input-group">
 													<div class="input-group-prepend">
-														<div class="input-group-text">$</div>
+														<div class="input-group-text">
+															<i class="fas fa-thumbs-up"></i>
+														</div>
 													</div> 
-													<input id="amount" name="amount" placeholder="1000" type="number" aria-describedby="amountHelpBlock" class="form-control"> 
-													<div class="input-group-append">
-														<div class="input-group-text">.00</div>
+													<select multiple="multiple" id="preferOrganisation" name="preferOrganisation" aria-describedby="preferOrganisationHelpBlock" class="form-control" size="3">
+														<optgroup label="Tax Status">
+															<option value='taxdeductible'>Tax Deductible</option>
+															<option value='nontaxdeductible'>Non Tax Deductible</option>
+														</optgroup>												
+														<optgroup label="Size">
+															<option value='small'>Small</option>
+															<option value='medium'>Medium</option>
+															<option value='large'>Large</option>
+														</optgroup>
+														<optgroup label="Tenure">
+															<option value='new'>New (less than three years)</option>
+															<option value='emerging'>Emerging (three to ten years)</option>
+															<option value='established'>Established (ten to fifty years)</option>
+															<option value='longstanding'>Longstanding (over fifty years)</option>
+														</optgroup>
+														<optgroup label="Legal Structure">
+															<option value='pbi'>Public Benevolent Institution</option>
+															<option value='hpc'>Health Promotion Charity</option>
+															<option value='puaf'>Public Ancillary Fund</option>
+															<option value='paf'>Private Ancillary Fund</option>
+														</optgroup>
+													</select>
+												</div>
+												<span id="preferOrganisationHelpBlock" class="form-text text-muted">Select one more more organisation types that are important to you</span>
+											</div>
+											<div class="form-group">
+												<div class="input-group">
+													<div class="input-group-prepend">
+														<div class="input-group-text">
+															<i class="fas fa-thumbs-down"></i>
+														</div>
+													</div> 
+													<select multiple="multiple" id="avoidOrganisation" name="avoidOrganisation" aria-describedby="avoidOrganisationHelpBlock" class="form-control" size="3">
+														<optgroup label="Tax Status" id="TaxStatus">
+															<option value='taxdeductible'>Tax Deductible</option>
+															<option value='nontaxdeductible'>Non Tax Deductible</option>
+														</optgroup>												
+														<optgroup label="Size" id="Size">
+															<option value='small'>Small</option>
+															<option value='medium'>Medium</option>
+															<option value='large'>Large</option>
+														</optgroup>
+														<optgroup label="Tenure" id="Tenure">
+															<option value='new'>New (less than three years)</option>
+															<option value='emerging'>Emerging (three to ten years)</option>
+															<option value='established'>Established (ten to fifty years)</option>
+															<option value='longstanding'>Longstanding (over fifty years)</option>
+														</optgroup>
+														<optgroup label="Legal Structure" id="LegalStructure">
+															<option value='pbi'>Public Benevolent Institution</option>
+															<option value='hpc'>Health Promotion Charity</option>
+															<option value='puaf'>Public Ancillary Fund</option>
+															<option value='paf'>Private Ancillary Fund</option>
+														</optgroup>
+													</select>
 													</div>
-												</div>	
-												<span id="amountHelpBlock" class="form-text text-muted">Enter your target annual gift amount (optional)</span>
+												<span id="avoidOrganisationHelpBlock" class="form-text text-muted">Select one more more organisation types to avoid with your giving</span>
+												<div class="col-10 centered">
+													<span>Select the weighting you give to organisation factors</span>
+													<span>Ignore</span><input type='range' class='custom-range' min='0' max='4' step='1' value='2' id='weightOrganisation'><span>Strict</span>
+												</div>
+											</div>											
+										</div>									
+										<div class="tab-pane fade" id="tabs-places" role="tabpanel" aria-labelledby="tabs-places-tab">
+											<div class="form-group">
+												<div class="input-group">
+													<div class="input-group-prepend">
+														<div class="input-group-text">
+															<i class="fas fa-thumbs-up"></i>
+														</div>
+													</div> 
+													<select multiple="multiple" id="preferPlaces" name="preferPlaces" aria-describedby="preferPlacesHelpBlock" class="form-control" size="3">
+														<option value='act'>Australian Capital Territory</option>
+														<option value='nsw'>New South Wales</option>
+														<option value='nt'>Northern Territory</option>
+														<option value='qld'>Queensland</option>
+														<option value='sa'>South Australia</option>
+														<option value='tas'>Tasmania</option>
+														<option value='vic'>Victoria</option>
+														<option value='wa'>Western Australia</option>
+													</select>
+												</div>
+												<span id="preferPlacesHelpBlock" class="form-text text-muted">Select one more more places that are important to you</span>
+											</div>
+											<div class="form-group">
+												<div class="input-group">
+													<div class="input-group-prepend">
+														<div class="input-group-text">
+															<i class="fas fa-thumbs-down"></i>
+														</div>
+													</div> 
+													<select multiple="multiple" id="avoidPlaces" name="avoidPlaces" aria-describedby="avoidPlacesHelpBlock" class="form-control" size="3">
+														<option value='act'>Australian Capital Territory</option>
+														<option value='nsw'>New South Wales</option>
+														<option value='nt'>Northern Territory</option>
+														<option value='qld'>Queensland</option>
+														<option value='sa'>South Australia</option>
+														<option value='tas'>Tasmania</option>
+														<option value='vic'>Victoria</option>
+														<option value='wa'>Western Australia</option>
+													</select>
+													</div>
+												<span id="avoidPlacesHelpBlock" class="form-text text-muted">Select one more more places to avoid with your giving</span>
 											</div>											
 										</div>
-									</div>
-									<div class="tab-pane fade" id="tabs-notifications" role="tabpanel" aria-labelledby="tabs-notifications-tab">
-										<div class="form-group row">
-											<div class="col-12">
-												<div class="custom-controls-stacked">
-													<div class="custom-control custom-checkbox">
-														<input name="notifications" id="Notification_0" type="checkbox" aria-describedby="NotificationHelpBlock" class="custom-control-input" value="submit" checked="checked" disabled="disabled"> 
-														<label for="Notification_0" class="custom-control-label">Whenever I submit a receipt</label>
-													</div>
+										<div class="tab-pane fade" id="tabs-goals" role="tabpanel" aria-labelledby="tabs-goals-tab">
+											<div class="form-group">
+												<div class="input-group">
+													<div class="input-group-prepend">
+														<div class="input-group-text">
+															<i class="fas fa-thumbs-up"></i>
+														</div>
+													</div> 
+													<select multiple="multiple" id="preferGoals" name="preferGoals" aria-describedby="preferGoalsHelpBlock" class="form-control" size="3">
+														<option value='animals'>Preventing or relieving suffering of animals</option>
+														<option value='culture'>Advancing culture</option>
+														<option value='education'>Advancing education</option>
+														<option value='health'>Advancing health</option>
+														<option value='advocacy'>Promote or oppose a change to the law policy or practice</option>
+														<option value='environment'>Advancing the natural environment</option>
+														<option value='humanrights'>Promoting or protecting human rights</option>
+														<option value='generalpublic'>Purposes beneficial to the general public</option>
+														<option value='reconcilation'>Promoting reconciliation mutual respect and tolerance</option>
+														<option value='religion'>Advancing religion</option>
+														<option value='welfare'>Advancing social or public welfare</option>
+														<option value='security'>Advancing the security or safety of Australia</option>
+													</select> 
 												</div>
-												<div class="custom-controls-stacked">
-													<div class="custom-control custom-checkbox">
-														<input name="notifications" id="Notification_1" type="checkbox" aria-describedby="NotificationHelpBlock" class="custom-control-input" value="monthly"> 
-														<label for="Notification_1" class="custom-control-label">Monthly summary</label>
-													</div>
-												</div>
-												<div class="custom-controls-stacked">
-													<div class="custom-control custom-checkbox">
-														<input name="notifications" id="Notification_2" type="checkbox" aria-describedby="NotificationHelpBlock" class="custom-control-input" value="eofy"> 
-														<label for="Notification_2" class="custom-control-label">End of Financial Year summary</label>
-													</div>
-												</div>
-												<div class="custom-controls-stacked">
-													<div class="custom-control custom-checkbox">
-														<input name="notifications" id="Notification_3" type="checkbox" aria-describedby="NotificationHelpBlock" class="custom-control-input" value="target" checked="checked"> 
-														<label for="Notification_3" class="custom-control-label">When I achieve my target</label>
-													</div>
-												</div>
-												<div class="custom-controls-stacked">
-													<div class="custom-control custom-checkbox">
-														<input name="notifications" id="Notification_4" type="checkbox" aria-describedby="NotificationHelpBlock" class="custom-control-input" value="match" checked="checked"> 
-														<label for="Notification_4" class="custom-control-label">When there are relevant matching offers</label>
-													</div>
-												</div> 
-												<span id="NotificationHelpBlock" class="form-text text-muted">Select when you would like to be notified</span>
+												<span id="preferGoalsHelpBlock" class="form-text text-muted">Select one more more goals that are important to you</span>
 											</div>
-										</div> 
-									</div>									
-									<div class="tab-pane fade" id="tabs-places" role="tabpanel" aria-labelledby="tabs-places-tab">
-										<div class="form-group">
-											<div class="input-group">
-												<div class="input-group-prepend">
-													<div class="input-group-text">
-														<i class="fas fa-thumbs-up"></i>
+											<div class="form-group">
+												<div class="input-group">
+													<div class="input-group-prepend">
+														<div class="input-group-text">
+															<i class="fas fa-thumbs-down"></i>
+														</div>
+													</div> 
+													<select multiple="multiple" id="avoidGoals" name="avoidGoals" aria-describedby="avoidGoalsHelpBlock" class="form-control" size="3">
+														<option value='animals'>Preventing or relieving suffering of animals</option>
+														<option value='culture'>Advancing culture</option>
+														<option value='education'>Advancing education</option>
+														<option value='health'>Advancing health</option>
+														<option value='advocacy'>Promote or oppose a change to the law policy or practice</option>
+														<option value='environment'>Advancing the natural environment</option>
+														<option value='humanrights'>Promoting or protecting human rights</option>
+														<option value='generalpublic'>Purposes beneficial to the general public</option>
+														<option value='reconcilation'>Promoting reconciliation mutual respect and tolerance</option>
+														<option value='religion'>Advancing religion</option>
+														<option value='welfare'>Advancing social or public welfare</option>
+														<option value='security'>Advancing the security or safety of Australia</option>
+													</select> 
 													</div>
-												</div> 
-												<select multiple="multiple" id="preferPlaces" name="preferPlaces" aria-describedby="preferPlacesHelpBlock" class="form-control" size="3">
-													<option value='act'>Australian Capital Territory</option>
-													<option value='nsw'>New South Wales</option>
-													<option value='nt'>Northern Territory</option>
-													<option value='qld'>Queensland</option>
-													<option value='sa'>South Australia</option>
-													<option value='tas'>Tasmania</option>
-													<option value='vic'>Victoria</option>
-													<option value='wa'>Western Australia</option>
-												</select>
-											</div>
-											<span id="preferPlacesHelpBlock" class="form-text text-muted">Select one more more places that are important to you</span>
+												<span id="avoidGoalsHelpBlock" class="form-text text-muted">Select one more more goals to avoid with your giving</span>
+											</div>										
 										</div>
-										<div class="form-group">
-											<div class="input-group">
-												<div class="input-group-prepend">
-													<div class="input-group-text">
-														<i class="fas fa-thumbs-down"></i>
-													</div>
-												</div> 
-												<select multiple="multiple" id="avoidPlaces" name="avoidPlaces" aria-describedby="avoidPlacesHelpBlock" class="form-control" size="3">
-													<option value='act'>Australian Capital Territory</option>
-													<option value='nsw'>New South Wales</option>
-													<option value='nt'>Northern Territory</option>
-													<option value='qld'>Queensland</option>
-													<option value='sa'>South Australia</option>
-													<option value='tas'>Tasmania</option>
-													<option value='vic'>Victoria</option>
-													<option value='wa'>Western Australia</option>
-												</select>
+										<div class="tab-pane fade" id="tabs-beneficiaries" role="tabpanel" aria-labelledby="tabs-beneficiaries-tab">
+											<div class="form-group">
+												<div class="input-group">
+													<div class="input-group-prepend">
+														<div class="input-group-text">
+															<i class="fas fa-thumbs-up"></i>
+														</div>
+													</div> 
+													<select multiple="multiple" id="preferBeneficiaries" name="preferBeneficiaries" aria-describedby="preferBeneficiariesHelpBlock" class="form-control" size="3">
+														<option value='aboriginaltsi'>Aboriginal or Torres Straight Islander</option>
+														<option value='adults'>Adults</option>
+														<option value='elderly'>Aged persons</option>
+														<option value='children'>Children</option>
+														<option value='overseas'>Communities overseas</option>
+														<option value='earlychildhood'>Early childhood</option>"
+														<option value='ethnic'>Ethnic groups</option>
+														<option value='families'>Families</option>
+														<option value='females'>Females</option>
+														<option value='poverty'>Financially disadvantaged</option>
+														<option value='lgbtqia+'>Gay lesbian and bisexual</option>
+														<option value='general'>General communities</option>
+														<option value='males'>Males</option>
+														<option value='refugees'>Migrants refugees and asylum seekers</option>
+														<option value='others'>Other beneficiaries</option>
+														<option value='charities'>Other charities</option>
+														<option value='homeless'>People at risk of homelessness</option>
+														<option value='illness'>People with chronic illnesses</option>
+														<option value='disabled'>People with disabilities</option>
+														<option value='offenders'>Pre or post release offenders</option>
+														<option value='rural'>Rural regional and remote communities</option>
+														<option value='unemployed'>Unemployed persons</option>
+														<option value='veterans'>Veterans or their families</option>
+														<option value='crimevictims'>Victims of crime</option>
+														<option value='disasters'>Victims of disasters</option>
+														<option value='youth'>Youth</option>
+													</select>
 												</div>
-											<span id="avoidPlacesHelpBlock" class="form-text text-muted">Select one more more places to avoid with your giving</span>
-										</div>											
-									</div>
-									<div class="tab-pane fade" id="tabs-goals" role="tabpanel" aria-labelledby="tabs-goals-tab">
-										<div class="form-group">
-											<div class="input-group">
-												<div class="input-group-prepend">
-													<div class="input-group-text">
-														<i class="fas fa-thumbs-up"></i>
-													</div>
-												</div> 
-												<select multiple="multiple" id="preferGoals" name="preferGoals" aria-describedby="preferGoalsHelpBlock" class="form-control" size="3">
-													<option value='animals'>Preventing or relieving suffering of animals</option>
-													<option value='culture'>Advancing culture</option>
-													<option value='education'>Advancing education</option>
-													<option value='health'>Advancing health</option>
-													<option value='advocacy'>Promote or oppose a change to the law policy or practice</option>
-													<option value='environment'>Advancing the natural environment</option>
-													<option value='humanrights'>Promoting or protecting human rights</option>
-													<option value='generalpublic'>Purposes beneficial to the general public</option>
-													<option value='reconcilation'>Promoting reconciliation mutual respect and tolerance</option>
-													<option value='religion'>Advancing religion</option>
-													<option value='welfare'>Advancing social or public welfare</option>
-													<option value='security'>Advancing the security or safety of Australia</option>
-												</select> 
+												<span id="preferBeneficiariesHelpBlock" class="form-text text-muted">Select one more more beneficiaries that are important to you</span>
 											</div>
-											<span id="preferGoalsHelpBlock" class="form-text text-muted">Select one more more goals that are important to you</span>
-										</div>
-										<div class="form-group">
-											<div class="input-group">
-												<div class="input-group-prepend">
-													<div class="input-group-text">
-														<i class="fas fa-thumbs-down"></i>
-													</div>
-												</div> 
-												<select multiple="multiple" id="avoidGoals" name="avoidGoals" aria-describedby="avoidGoalsHelpBlock" class="form-control" size="3">
-													<option value='animals'>Preventing or relieving suffering of animals</option>
-													<option value='culture'>Advancing culture</option>
-													<option value='education'>Advancing education</option>
-													<option value='health'>Advancing health</option>
-													<option value='advocacy'>Promote or oppose a change to the law policy or practice</option>
-													<option value='environment'>Advancing the natural environment</option>
-													<option value='humanrights'>Promoting or protecting human rights</option>
-													<option value='generalpublic'>Purposes beneficial to the general public</option>
-													<option value='reconcilation'>Promoting reconciliation mutual respect and tolerance</option>
-													<option value='religion'>Advancing religion</option>
-													<option value='welfare'>Advancing social or public welfare</option>
-													<option value='security'>Advancing the security or safety of Australia</option>
-												</select> 
+											<div class="form-group">
+												<div class="input-group">
+													<div class="input-group-prepend">
+														<div class="input-group-text">
+															<i class="fas fa-thumbs-down"></i>
+														</div>
+													</div> 
+													<select multiple="multiple" id="avoidBeneficiaries" name="avoidBeneficiaries" aria-describedby="avoidBeneficiariesHelpBlock" class="form-control" size="3">
+														<option value='aboriginaltsi'>Aboriginal or Torres Straight Islander</option>
+														<option value='adults'>Adults</option>
+														<option value='elderly'>Aged persons</option>
+														<option value='children'>Children</option>
+														<option value='overseas'>Communities overseas</option>
+														<option value='earlychildhood'>Early childhood</option>"
+														<option value='ethnic'>Ethnic groups</option>
+														<option value='families'>Families</option>
+														<option value='females'>Females</option>
+														<option value='poverty'>Financially disadvantaged</option>
+														<option value='lgbtqia+'>Gay lesbian and bisexual</option>
+														<option value='general'>General communities</option>
+														<option value='males'>Males</option>
+														<option value='refugees'>Migrants refugees and asylum seekers</option>
+														<option value='others'>Other beneficiaries</option>
+														<option value='charities'>Other charities</option>
+														<option value='homeless'>People at risk of homelessness</option>
+														<option value='illness'>People with chronic illnesses</option>
+														<option value='disabled'>People with disabilities</option>
+														<option value='offenders'>Pre or post release offenders</option>
+														<option value='rural'>Rural regional and remote communities</option>
+														<option value='unemployed'>Unemployed persons</option>
+														<option value='veterans'>Veterans or their families</option>
+														<option value='crimevictims'>Victims of crime</option>
+														<option value='disasters'>Victims of disasters</option>
+														<option value='youth'>Youth</option>
+													</select>
 												</div>
-											<span id="avoidGoalsHelpBlock" class="form-text text-muted">Select one more more goals to avoid with your giving</span>
-										</div>										
-									</div>
-									<div class="tab-pane fade" id="tabs-beneficiaries" role="tabpanel" aria-labelledby="tabs-beneficiaries-tab">
-										<div class="form-group">
-											<div class="input-group">
-												<div class="input-group-prepend">
-													<div class="input-group-text">
-														<i class="fas fa-thumbs-up"></i>
-													</div>
-												</div> 
-												<select multiple="multiple" id="preferBeneficiaries" name="preferBeneficiaries" aria-describedby="preferBeneficiariesHelpBlock" class="form-control" size="3">
-													<option value='aboriginaltsi'>Aboriginal or Torres Straight Islander</option>
-													<option value='adults'>Adults</option>
-													<option value='elderly'>Aged persons</option>
-													<option value='children'>Children</option>
-													<option value='overseas'>Communities overseas</option>
-													<option value='earlychildhood'>Early childhood</option>"
-													<option value='ethnic'>Ethnic groups</option>
-													<option value='families'>Families</option>
-													<option value='females'>Females</option>
-													<option value='poverty'>Financially disadvantaged</option>
-													<option value='lgbtqia+'>Gay lesbian and bisexual</option>
-													<option value='general'>General communities</option>
-													<option value='males'>Males</option>
-													<option value='refugees'>Migrants refugees and asylum seekers</option>
-													<option value='others'>Other beneficiaries</option>
-													<option value='charities'>Other charities</option>
-													<option value='homeless'>People at risk of homelessness</option>
-													<option value='illness'>People with chronic illnesses</option>
-													<option value='disabled'>People with disabilities</option>
-													<option value='offenders'>Pre or post release offenders</option>
-													<option value='rural'>Rural regional and remote communities</option>
-													<option value='unemployed'>Unemployed persons</option>
-													<option value='veterans'>Veterans or their families</option>
-													<option value='crimevictims'>Victims of crime</option>
-													<option value='disasters'>Victims of disasters</option>
-													<option value='youth'>Youth</option>
-												</select>
-											</div>
-											<span id="preferBeneficiariesHelpBlock" class="form-text text-muted">Select one more more beneficiaries that are important to you</span>
+												<span id="avoidBeneficiariesHelpBlock" class="form-text text-muted">Select one more more beneficiaries to avoid with your giving</span>
+											</div>									
 										</div>
-										<div class="form-group">
-											<div class="input-group">
-												<div class="input-group-prepend">
-													<div class="input-group-text">
-														<i class="fas fa-thumbs-down"></i>
-													</div>
-												</div> 
-												<select multiple="multiple" id="avoidBeneficiaries" name="avoidBeneficiaries" aria-describedby="avoidBeneficiariesHelpBlock" class="form-control" size="3">
-													<option value='aboriginaltsi'>Aboriginal or Torres Straight Islander</option>
-													<option value='adults'>Adults</option>
-													<option value='elderly'>Aged persons</option>
-													<option value='children'>Children</option>
-													<option value='overseas'>Communities overseas</option>
-													<option value='earlychildhood'>Early childhood</option>"
-													<option value='ethnic'>Ethnic groups</option>
-													<option value='families'>Families</option>
-													<option value='females'>Females</option>
-													<option value='poverty'>Financially disadvantaged</option>
-													<option value='lgbtqia+'>Gay lesbian and bisexual</option>
-													<option value='general'>General communities</option>
-													<option value='males'>Males</option>
-													<option value='refugees'>Migrants refugees and asylum seekers</option>
-													<option value='others'>Other beneficiaries</option>
-													<option value='charities'>Other charities</option>
-													<option value='homeless'>People at risk of homelessness</option>
-													<option value='illness'>People with chronic illnesses</option>
-													<option value='disabled'>People with disabilities</option>
-													<option value='offenders'>Pre or post release offenders</option>
-													<option value='rural'>Rural regional and remote communities</option>
-													<option value='unemployed'>Unemployed persons</option>
-													<option value='veterans'>Veterans or their families</option>
-													<option value='crimevictims'>Victims of crime</option>
-													<option value='disasters'>Victims of disasters</option>
-													<option value='youth'>Youth</option>
-												</select>
+										<div class="tab-pane fade" id="tabs-keywords" role="tabpanel" aria-labelledby="tabs-keywords-tab">
+											<div class="form-group">
+												<div class="input-group">
+													<div class="input-group-prepend">
+														<div class="input-group-text">
+															<i class="fas fa-thumbs-up"></i>
+														</div>
+													</div> 
+													<select multiple="multiple" id="preferKeywords" name="preferKeywords" aria-describedby="preferKeywordsHelpBlock" class="form-control" size="3">
+													</select>
+												</div>
+												<span id="preferKeywordsHelpBlock" class="form-text text-muted">Enter one more more keywords that are important to you</span>
 											</div>
-											<span id="avoidBeneficiariesHelpBlock" class="form-text text-muted">Select one more more beneficiaries to avoid with your giving</span>
+											<div class="form-group">
+												<div class="input-group">
+													<div class="input-group-prepend">
+														<div class="input-group-text">
+															<i class="fas fa-thumbs-down"></i>
+														</div>
+													</div> 
+													<select multiple="multiple" id="avoidKeywords" name="avoidKeywords" aria-describedby="avoidKeywordsHelpBlock" class="form-control" size="3">
+													</select>
+												</div>
+												<span id="avoidKeywordsHelpBlock" class="form-text text-muted">Enter one more more keywords to avoid with your giving</span>
+											</div>									
 										</div>									
-									</div>								
-								</div>						
+									</div>
+								</div>	
 								<div class="form-group" style="border-top: 0.125rem solid #9cc3d5;">
 									<div class="custom-control custom-checkbox mt-2">
 										<input name="consent" id="consent_0" type="checkbox" class="custom-control-input" value="consent" style="background-color: #9cc3d5;" required> 
